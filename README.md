@@ -10,8 +10,20 @@ Videos never link to the hub root. Each video links to its own sheet under `guid
 ```
 index.html                  hub index: table / gallery views + search
 assets/css/main.css         the whole design system, one file
+assets/icons/               tab icon, generated from the CSS tokens
 guides/<slug>/index.html    one sheet per video
 .nojekyll                   serve files verbatim, no Jekyll processing
+```
+
+## Icons
+
+`assets/icons/make-icons.py` writes `icon.svg`, `icon-32.png` and `icon-192.png`
+from the OKLCH values in `main.css`, so the tab icon can never drift from the
+palette. Re-run it if those tokens change:
+
+```bash
+python3 assets/icons/make-icons.py --selfcheck   # assertions only, writes nothing
+python3 assets/icons/make-icons.py               # regenerate all three
 ```
 
 ## Adding a guide
