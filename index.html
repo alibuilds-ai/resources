@@ -77,7 +77,7 @@
               <a class="name" href="guides/agent-built-app/"><span class="callout-n">1</span><span>How I get an agent to build a working app in a day</span></a>
             </td>
             <td><span class="cat" data-cat="Method">Method</span></td>
-            <td><span class="tags"><span class="tag">agents</span><span class="tag">prd</span><span class="tag">review-loop</span><span class="tag">ios</span></span></td>
+            <td><span class="tags"><span class="tag" data-c="cyan">agents</span><span class="tag" data-c="blue">prd</span><span class="tag" data-c="blue">review-loop</span><span class="tag" data-c="green">ios</span></span></td>
             <td class="c-created">17 Aug 2026</td>
           </tr>
 
@@ -92,7 +92,7 @@
               <span class="name"><span class="callout-n">2</span><span>Cutting Claude Code token costs five ways</span></span>
             </td>
             <td><span class="cat" data-cat="Method">Method</span></td>
-            <td><span class="tags"><span class="tag">claude-code</span><span class="tag">tokens</span><span class="tag">cost</span></span></td>
+            <td><span class="tags"><span class="tag" data-c="violet">claude-code</span><span class="tag" data-c="amber">tokens</span><span class="tag" data-c="amber">cost</span></span></td>
             <td class="c-created">—</td>
           </tr>
 
@@ -107,7 +107,7 @@
               <span class="name"><span class="callout-n">3</span><span>Turning any book into an agent skill</span></span>
             </td>
             <td><span class="cat" data-cat="Method">Method</span></td>
-            <td><span class="tags"><span class="tag">agents</span><span class="tag">skills</span><span class="tag">tokens</span></span></td>
+            <td><span class="tags"><span class="tag" data-c="cyan">agents</span><span class="tag" data-c="cyan">skills</span><span class="tag" data-c="amber">tokens</span></span></td>
             <td class="c-created">—</td>
           </tr>
 
@@ -122,7 +122,7 @@
               <span class="name"><span class="callout-n">4</span><span>Five Claude plugins for better frontend design</span></span>
             </td>
             <td><span class="cat" data-cat="Teardown">Teardown</span></td>
-            <td><span class="tags"><span class="tag">claude-code</span><span class="tag">frontend</span><span class="tag">plugins</span></span></td>
+            <td><span class="tags"><span class="tag" data-c="violet">claude-code</span><span class="tag" data-c="rose">frontend</span><span class="tag" data-c="violet">plugins</span></span></td>
             <td class="c-created">—</td>
           </tr>
 
@@ -183,9 +183,8 @@
     inner.appendChild(el('p', null, d.blurb));
 
     var foot = el('div', 'cardfoot');
-    var tags = el('span', 'tags');
-    d.tags.split(',').forEach(function (t) { tags.appendChild(el('span', 'tag', t.trim())); });
-    foot.appendChild(tags);
+    // clone the row's own chips so their colour coding carries over
+    foot.appendChild(tr.querySelector('.tags').cloneNode(true));
     foot.appendChild(el('span', 'when', d.created));
     inner.appendChild(foot);
 

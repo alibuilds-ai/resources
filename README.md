@@ -22,7 +22,11 @@ guides/<slug>/index.html    one sheet per video
    - `data-status` — `published` or `queued`
    - `data-name`, `data-cat`, `data-tags`, `data-created`, `data-n`, `data-blurb`
    - `data-href` — omit for queued rows so the row is not a link
-3. Update the `sheet NN` labels in the hero dimension line.
+3. Give each `.tag` chip a `data-c`: `cyan` (agent mechanics), `blue` (planning
+   artefacts), `violet` (tooling), `green` (platform), `amber` (cost), `rose`
+   (craft). Leave it off and the chip falls back to the neutral style.
+   `data-tags` on the row stays plain text and only feeds search.
+4. Update the `sheet NN` labels in the hero dimension line.
 
 ## Local preview
 

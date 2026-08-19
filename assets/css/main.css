@@ -253,6 +253,17 @@ table.db td.c-created { font-family: var(--mono); font-size: 0.75rem; color: var
   padding: 0.08rem 0.36rem; white-space: nowrap;
 }
 
+/* Tag colours are grouped by what the tag is about, not assigned at random:
+   cyan = agent mechanics, blue = planning artefacts, violet = tooling,
+   green = platform, amber = cost, rose = craft. A tag with no data-c falls
+   back to the neutral chip above, so new tags never look broken. */
+.tag[data-c="cyan"]   { color: oklch(0.870 0.100 200); border-color: oklch(0.480 0.075 200); background: oklch(0.290 0.045 200); }
+.tag[data-c="blue"]   { color: oklch(0.860 0.090 255); border-color: oklch(0.480 0.070 255); background: oklch(0.290 0.045 255); }
+.tag[data-c="violet"] { color: oklch(0.860 0.095 300); border-color: oklch(0.480 0.075 300); background: oklch(0.295 0.048 300); }
+.tag[data-c="green"]  { color: oklch(0.865 0.105 155); border-color: oklch(0.470 0.075 155); background: oklch(0.285 0.045 155); }
+.tag[data-c="amber"]  { color: oklch(0.870 0.105  75); border-color: oklch(0.490 0.080  70); background: oklch(0.295 0.048  70); }
+.tag[data-c="rose"]   { color: oklch(0.860 0.095  15); border-color: oklch(0.490 0.080  15); background: oklch(0.295 0.048  15); }
+
 /* ---------- index: gallery view ---------- */
 
 /* 1px gap plus a 1px ring on each card draws the rules without filling the
