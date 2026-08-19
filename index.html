@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resources · alibuilds</title>
+<meta name="description" content="The drawings behind the builds. One sheet per video: what was decided, in what order, and what each decision removed.">
+<meta property="og:title" content="Resources · alibuilds">
+<meta property="og:description" content="The drawings behind the builds. One sheet per video: what was decided, in what order, and what each decision removed.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#index">Skip to the guide index</a>
+
+<div class="titleblock"><div class="wrap">
+  <div class="tb"><b>alibuilds</b>resources</div>
+  <div class="tb tb-hide">sheet<span class="v"> index</span></div>
+  <div class="tb tb-hide">rev<span class="v"> 2026.08</span></div>
+  <div class="tb"><a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a></div>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <h1>The drawings behind the builds, <u>not just the finished thing</u>.</h1>
+  <p>Each video that has a method worth keeping gets a sheet here: what was decided, in what order, and what each decision removed. No email box, no gated download.</p>
+  <div class="dim"><span>sheet 01</span><span class="l"></span><span>sheet 04</span></div>
+</div></header>
+
+<main class="wrap" id="index">
+
+  <section class="sect">
+    <div class="sect-head">index of sheets</div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M13.5 13.5 18 18"/></svg>
+        <input type="search" id="q" placeholder="Search name, category or tag" aria-label="Search guides by name, category or tag" autocomplete="off">
+      </div>
+
+      <div class="viewswitch" role="group" aria-label="View">
+        <button type="button" id="view-table" aria-pressed="true">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2.5" width="14" height="11"/><path d="M1 6.5h14M6 6.5v7"/></svg>Table
+        </button>
+        <button type="button" id="view-gallery" aria-pressed="false">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="5.5" height="5"/><rect x="9" y="2.5" width="5.5" height="5"/><rect x="1.5" y="8.5" width="5.5" height="5"/><rect x="9" y="8.5" width="5.5" height="5"/></svg>Gallery
+        </button>
+      </div>
+
+      <span class="count" id="count" aria-live="polite">4 sheets</span>
+    </div>
+
+    <div class="tablewrap" id="tableview">
+      <table class="db">
+        <thead>
+          <tr>
+            <th scope="col"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5h7l3 3v8H3z"/><path d="M9.5 2.5V6h3.5"/></svg>Name</th>
+            <th scope="col"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5 13.5 8 8 13.5 2.5 8z"/></svg>Category</th>
+            <th scope="col"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 2.5h5l6 6-5 5-6-6z"/><circle cx="5.5" cy="5.5" r="1"/></svg>Tags</th>
+            <th scope="col"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 4.5V8l2.5 1.5"/></svg>Created time</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+
+          <tr data-status="published"
+              data-name="How I get an agent to build a working app in a day"
+              data-cat="Method"
+              data-tags="agents, prd, review-loop, ios"
+              data-created="17 Aug 2026"
+              data-n="1"
+              data-href="guides/agent-built-app/"
+              data-blurb="The PRD, the interrogation that turns it into locked decisions, and the reviewer gate that every phase has to pass.">
+            <td class="c-name">
+              <a class="name" href="guides/agent-built-app/"><span class="callout-n">1</span><span>How I get an agent to build a working app in a day</span></a>
+            </td>
+            <td><span class="cat" data-cat="Method">Method</span></td>
+            <td><span class="tags"><span class="tag">agents</span><span class="tag">prd</span><span class="tag">review-loop</span><span class="tag">ios</span></span></td>
+            <td class="c-created">17 Aug 2026</td>
+          </tr>
+
+          <tr data-status="queued"
+              data-name="Cutting Claude Code token costs five ways"
+              data-cat="Method"
+              data-tags="claude-code, tokens, cost"
+              data-created="—"
+              data-n="2"
+              data-blurb="What actually moved the number, measured before and after each change.">
+            <td class="c-name">
+              <span class="name"><span class="callout-n">2</span><span>Cutting Claude Code token costs five ways</span></span>
+            </td>
+            <td><span class="cat" data-cat="Method">Method</span></td>
+            <td><span class="tags"><span class="tag">claude-code</span><span class="tag">tokens</span><span class="tag">cost</span></span></td>
+            <td class="c-created">—</td>
+          </tr>
+
+          <tr data-status="queued"
+              data-name="Turning any book into an agent skill"
+              data-cat="Method"
+              data-tags="agents, skills, tokens"
+              data-created="—"
+              data-n="3"
+              data-blurb="The chunking pass, the index it needs, and why the naive version burns more than it saves.">
+            <td class="c-name">
+              <span class="name"><span class="callout-n">3</span><span>Turning any book into an agent skill</span></span>
+            </td>
+            <td><span class="cat" data-cat="Method">Method</span></td>
+            <td><span class="tags"><span class="tag">agents</span><span class="tag">skills</span><span class="tag">tokens</span></span></td>
+            <td class="c-created">—</td>
+          </tr>
+
+          <tr data-status="queued"
+              data-name="Five Claude plugins for better frontend design"
+              data-cat="Teardown"
+              data-tags="claude-code, frontend, plugins"
+              data-created="—"
+              data-n="4"
+              data-blurb="Installed, run against the same page, with the screenshots side by side.">
+            <td class="c-name">
+              <span class="name"><span class="callout-n">4</span><span>Five Claude plugins for better frontend design</span></span>
+            </td>
+            <td><span class="cat" data-cat="Teardown">Teardown</span></td>
+            <td><span class="tags"><span class="tag">claude-code</span><span class="tag">frontend</span><span class="tag">plugins</span></span></td>
+            <td class="c-created">—</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gallery" id="galleryview" hidden></div>
+
+    <p class="empty" id="empty" hidden>No sheet matches that.</p>
+  </section>
+
+</main>
+
+<footer class="site"><div class="wrap">
+  alibuilds / resources — new sheets land here as the videos go out —
+  <a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a>
+</div></footer>
+
+<script>
+/* ponytail: the table rows in the HTML above are the single source of truth.
+   Gallery cards are built from them, so a guide is added in exactly one place
+   and the page still works as a plain table with JS off. */
+(function () {
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#rows tr'));
+  var gallery = document.getElementById('galleryview');
+  var tableview = document.getElementById('tableview');
+  var empty = document.getElementById('empty');
+  var count = document.getElementById('count');
+  var q = document.getElementById('q');
+  var btnTable = document.getElementById('view-table');
+  var btnGallery = document.getElementById('view-gallery');
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  // build the gallery once, from the table
+  var cards = rows.map(function (tr) {
+    var d = tr.dataset;
+    var card = el('div', 'card');
+    card.dataset.status = d.status;
+
+    var inner = d.href ? el('a') : el('div', 'inner');
+    if (d.href) inner.href = d.href;
+
+    var top = el('div', 'cardtop');
+    top.appendChild(el('span', 'callout-n', d.n));
+    var cat = el('span', 'cat', d.cat);
+    cat.dataset.cat = d.cat;
+    top.appendChild(cat);
+    inner.appendChild(top);
+
+    inner.appendChild(el('h3', null, d.name));
+    inner.appendChild(el('p', null, d.blurb));
+
+    var foot = el('div', 'cardfoot');
+    var tags = el('span', 'tags');
+    d.tags.split(',').forEach(function (t) { tags.appendChild(el('span', 'tag', t.trim())); });
+    foot.appendChild(tags);
+    foot.appendChild(el('span', 'when', d.created));
+    inner.appendChild(foot);
+
+    card.appendChild(inner);
+    gallery.appendChild(card);
+    return card;
+  });
+
+  var haystacks = rows.map(function (tr) {
+    var d = tr.dataset;
+    return (d.name + ' ' + d.cat + ' ' + d.tags + ' ' + d.blurb).toLowerCase();
+  });
+
+  function filter() {
+    var term = q.value.trim().toLowerCase();
+    var shown = 0;
+    haystacks.forEach(function (hay, i) {
+      var hit = !term || hay.indexOf(term) !== -1;
+      rows[i].hidden = !hit;
+      cards[i].hidden = !hit;
+      if (hit) shown++;
+    });
+    count.textContent = shown + (shown === 1 ? ' sheet' : ' sheets');
+    empty.hidden = shown !== 0;
+  }
+
+  function setView(view) {
+    var isTable = view === 'table';
+    tableview.hidden = !isTable;
+    gallery.hidden = isTable;
+    btnTable.setAttribute('aria-pressed', String(isTable));
+    btnGallery.setAttribute('aria-pressed', String(!isTable));
+    try { localStorage.setItem('ab-view', view); } catch (e) { /* private mode */ }
+  }
+
+  q.addEventListener('input', filter);
+  btnTable.addEventListener('click', function () { setView('table'); });
+  btnGallery.addEventListener('click', function () { setView('gallery'); });
+
+  var saved;
+  try { saved = localStorage.getItem('ab-view'); } catch (e) { saved = null; }
+  setView(saved === 'gallery' ? 'gallery' : 'table');
+  filter();
+})();
+</script>
+
+</body>
+</html>

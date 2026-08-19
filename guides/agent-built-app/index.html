@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How I get an agent to build a working app in a day · alibuilds</title>
+<meta name="description" content="The PRD, the interrogation that turns it into locked decisions, and the implementer-and-reviewer loop that gates every phase.">
+<meta property="og:title" content="How I get an agent to build a working app in a day">
+<meta property="og:description" content="The PRD, the interrogation that turns it into locked decisions, and the implementer-and-reviewer loop that gates every phase.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the guide</a>
+
+<div class="titleblock"><div class="wrap">
+  <div class="tb"><b>alibuilds</b>resources</div>
+  <div class="tb tb-hide">sheet<span class="v"> 01</span></div>
+  <div class="tb tb-hide">rev<span class="v"> 2026.08.17</span></div>
+  <div class="tb"><a href="../../">All sheets</a></div>
+</div></div>
+
+<div class="guide-head"><div class="wrap">
+  <p class="kicker">Method · 17 Aug 2026</p>
+  <h1>How I get an agent to build a working app in a day</h1>
+  <p class="standfirst">The webcam app in the video took under ten hours, and almost none of that was me writing code. Most of it was deciding things before the agent was allowed to start. Here is the whole setup, stripped of anything specific to that app.</p>
+</div></div>
+
+<main class="wrap" id="body">
+<div class="prose">
+
+  <p>The reason this works is not that the model is clever. It is that an agent with a vague brief will produce something plausible and wrong, and you will not notice until you are four hours in. Every step below exists to remove one category of ambiguity before it can turn into code.</p>
+
+  <p>I ran this against a real problem: I wanted my iPhone's rear camera as a 1080p60 webcam, and the apps that do it charge monthly for that quality. The video covers the why. This page covers the how, and it applies to anything you would otherwise pay a subscription for.</p>
+
+  <h2>The shape of it</h2>
+
+  <figure class="dwg">
+    <svg viewBox="0 0 700 200" role="img" aria-labelledby="loop-title loop-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="loop-title">The phase loop</title>
+      <desc id="loop-desc">A PRD feeds an interrogation step, which produces locked decisions and a phase list. Each phase runs an implementer, then a reviewer. The reviewer either sends work back to the implementer or opens the gate to the next phase.</desc>
+      <defs>
+        <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="oklch(0.775 0.022 240)"/></marker>
+        <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="oklch(0.790 0.155 55)"/></marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="oklch(0.945 0.012 240)">
+        <rect x="1" y="16" width="110" height="40" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="56" y="36" text-anchor="middle">PRD</text>
+        <text x="56" y="50" text-anchor="middle" font-size="9.5" fill="oklch(0.610 0.028 245)">problem, goals</text>
+
+        <line x1="111" y1="36" x2="137" y2="36" stroke="oklch(0.775 0.022 240)" marker-end="url(#a1)"/>
+
+        <rect x="139" y="16" width="122" height="40" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="200" y="36" text-anchor="middle">Grill</text>
+        <text x="200" y="50" text-anchor="middle" font-size="9.5" fill="oklch(0.610 0.028 245)">every ambiguity</text>
+
+        <line x1="261" y1="36" x2="287" y2="36" stroke="oklch(0.775 0.022 240)" marker-end="url(#a1)"/>
+
+        <rect x="289" y="16" width="146" height="40" fill="oklch(0.840 0.120 200)"/>
+        <text x="362" y="36" text-anchor="middle" fill="oklch(0.192 0.036 255)">Locked decisions</text>
+        <text x="362" y="50" text-anchor="middle" font-size="9.5" fill="oklch(0.192 0.036 255 / 0.75)">+ phase list</text>
+
+        <line x1="362" y1="56" x2="362" y2="88" stroke="oklch(0.775 0.022 240)" marker-end="url(#a1)"/>
+
+        <rect x="180" y="90" width="368" height="92" fill="none" stroke="oklch(0.360 0.040 250)" stroke-dasharray="3 4"/>
+        <text x="192" y="106" font-size="9.5" fill="oklch(0.610 0.028 245)">per phase</text>
+
+        <rect x="208" y="114" width="124" height="40" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="270" y="134" text-anchor="middle">Implementer</text>
+        <text x="270" y="148" text-anchor="middle" font-size="9.5" fill="oklch(0.610 0.028 245)">writes the code</text>
+
+        <line x1="332" y1="132" x2="394" y2="132" stroke="oklch(0.775 0.022 240)" marker-end="url(#a1)"/>
+
+        <rect x="396" y="114" width="124" height="40" fill="none" stroke="oklch(0.790 0.155 55)"/>
+        <text x="458" y="134" text-anchor="middle" fill="oklch(0.790 0.155 55)">Reviewer</text>
+        <text x="458" y="148" text-anchor="middle" font-size="9.5" fill="oklch(0.610 0.028 245)">gates the phase</text>
+
+        <path d="M458 154 L458 170 L270 170 L270 154" fill="none" stroke="oklch(0.790 0.155 55)" marker-end="url(#a2)"/>
+        <text x="364" y="192" text-anchor="middle" font-size="9.5" fill="oklch(0.790 0.155 55)">issues found, go again</text>
+
+        <line x1="520" y1="140" x2="574" y2="140" stroke="oklch(0.775 0.022 240)" marker-end="url(#a1)"/>
+        <text x="637" y="136" text-anchor="middle" font-size="10.5">clean, so</text>
+        <text x="637" y="150" text-anchor="middle" font-size="10.5">next phase</text>
+      </g>
+    </svg>
+    <figcaption>fig. 1 — nothing reaches the next phase until the reviewer stops finding things. That gate is the whole trick.</figcaption>
+  </figure>
+
+  <h2>The steps</h2>
+
+  <ol class="proc">
+
+    <li>
+      <h3>Write a PRD before you write a prompt</h3>
+      <p>Not a paragraph describing what you want. A document with a problem statement, a list of goals, and a list of non-goals. The problem statement should say what you already tried and what specifically failed, with the evidence. Mine recorded that the browser path tops out at 720p60 and silently drops to 30fps at 1080p, which is a WebKit limitation rather than a bug in the tool I was using.</p>
+      <p>The non-goals list is the part people skip and the part that saves the most time. Every item on it is a feature the agent would otherwise build for you, unprompted, and then defend. Mine ruled out audio, the front camera, cloud relay, encryption, rooms, recording, Android, and App Store distribution. That is an enormous amount of work deleted in one sitting.</p>
+    </li>
+
+    <li>
+      <h3>Let something interrogate the plan</h3>
+      <p>A PRD written in one pass is full of decisions you did not realise you were leaving open. I use a skill that does nothing but grill me about it, question after question, until there is nothing vague left. It refuses to move on when an answer is hand-wavy.</p>
+      <p>The output is a table. One row per question, the decision, and the consequence of that decision. Audio: none, which removes the audio session, the mic permission, and a whole class of interruption handling. Orientation: locked landscape, so no rotation logic exists anywhere in the codebase. Each row deletes work.</p>
+      <p>The same session produces a second list that is just as useful: things that were in the PRD and are now cut, with the reason. I had planned a phase to reverse-engineer a network protocol. During the grilling it turned out an open-source client already implements that exact protocol in readable form, so the phase disappeared and was replaced by a reference section. That is a day saved by a question.</p>
+    </li>
+
+    <li>
+      <h3>Break it into phases with an observable finish line</h3>
+      <p>Each phase gets a "done when" that a person could check without reading any code. Not "signaling implemented" but "a browser at this address shows moving video from the phone, and resolution does not matter yet". Not "quality works" but "the app's own stats read 1920x1080 at 60 sustained, the throttling reason reads none, and the receiving end agrees".</p>
+      <p>Order them so the riskiest, least understood part is first, with as little code around it as possible. If the part you ported blind is wrong, you want to find out in phase one while there is nothing else to blame.</p>
+    </li>
+
+    <li>
+      <h3>Run implementer and reviewer as separate agents</h3>
+      <p>The implementer writes the phase. A second agent then reviews that work against the PRD and the phase's finish line. I run the reviewer on the stronger model, because catching a subtle mistake is harder than making the change.</p>
+      <p>Anything the reviewer finds goes back to the implementer, and the loop runs again. The phase is not finished when the implementer says it is finished. It is finished when the reviewer comes back with nothing. Only then does anything get committed, deployed, or built on top of.</p>
+      <p>Keeping them separate matters. An agent reviewing its own work grades generously, and you get an approval that means nothing.</p>
+    </li>
+
+    <li>
+      <h3>Make the loop admit what it cannot check</h3>
+      <p>Some finish lines need physical reality. Mine included a thirty-minute soak test with the phone in hand, a real receiver running, and a latency measurement taken by photographing a millisecond timer. No amount of reviewing gets you that.</p>
+      <p>So the rule is written down: a phase whose finish line needs hardware cannot be marked done by the loop, and the agent has to say so instead of quietly closing it. Without that instruction you get a green checkmark on something nobody has ever run.</p>
+    </li>
+
+    <li>
+      <h3>Keep the rules in a file, not in the chat</h3>
+      <p>Sessions end and context gets dropped. Anything you want to survive that goes in a constraints file the agent reads on every session: the hard limits, the working discipline, the loop itself. Mine says what must never change, that the app should fail loudly rather than silently downgrade quality, and that a changelog entry gets written in the same turn as the change rather than reconstructed from memory later.</p>
+      <p>That last one sounds like bookkeeping. It is the reason I can tell you months later why a phase was deleted.</p>
+    </li>
+
+  </ol>
+
+  <h2>What actually made it fast</h2>
+
+  <p>Ten hours of wall time, and the coding was the small part. The decisions table and the non-goals list are what kept the agent from building three things I would have thrown away. The reviewer gate is what stopped me from stacking a second phase on top of a broken first one, which is the failure that normally eats a weekend.</p>
+
+  <div class="annot">
+    <span class="tag">note</span>
+    <p>I am a software engineer, but I had never written a line of Swift and had never built a streaming app. Learning both properly would have taken weeks, and I would have given up and bought the subscription. The method is what closed that gap, not existing knowledge of the platform.</p>
+  </div>
+
+  <h2>The pieces I used</h2>
+
+  <p>For the video's build the local engine was <a href="https://vdo.ninja/">VDO.Ninja</a>, self-hosted on my own network. It already handles receiving a stream and handing it to whatever you are recording with, so the app I built only had to be a well-behaved publisher pointed at my own server. Worth checking before you build anything in this space, because a lot of the hard part may already exist and be free.</p>
+
+  <p>Everything else was <a href="https://claude.com/claude-code">Claude Code</a> with the loop above, and one dependency in the app itself.</p>
+
+  <div class="annot">
+    <span class="tag">if you copy one thing</span>
+    <p>Copy the gate. A reviewer that can send work back, and a rule that nothing proceeds until it stops finding problems. The PRD and the phase list are what make the gate meaningful, but the gate is what turns a pile of generated code into something that runs.</p>
+  </div>
+
+</div>
+</main>
+
+<footer class="guide-foot"><div class="wrap">
+  <p>This sheet backs the video on building an iPhone webcam app instead of paying for one.</p>
+  <p class="nav"><a href="../../">All sheets</a> · <a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a></p>
+</div></footer>
+
+</body>
+</html>
