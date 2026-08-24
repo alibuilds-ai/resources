@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five free ways to run Ox Alpha · alibuilds</title>
+<meta name="description" content="The anonymous 1M-context coding model, the five providers giving it away, and the exact model id each one wants.">
+<meta property="og:title" content="Five free ways to run Ox Alpha">
+<meta property="og:description" content="The anonymous 1M-context coding model, the five providers giving it away, and the exact model id each one wants.">
+<meta property="og:type" content="article">
+<link rel="icon" href="../../assets/icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the guide</a>
+
+<div class="titleblock"><div class="wrap">
+  <div class="tb"><a href="../../"><b>alibuilds</b>resources</a></div>
+  <div class="tb tb-hide">sheet<span class="v"> 05</span></div>
+  <div class="tb tb-hide">rev<span class="v"> 2026.08.24</span></div>
+  <div class="tb"><a href="../../">All sheets</a></div>
+</div></div>
+
+<div class="guide-head"><div class="wrap">
+  <p class="kicker">Reference · 24 Aug 2026</p>
+  <h1>Five free ways to run Ox Alpha</h1>
+  <p class="standfirst">Nobody has claimed this model, it has a million-token context window, and five different providers are currently handing it out for nothing. Here is where each one lives, the exact model id it expects, and what you are giving up by using it.</p>
+</div></div>
+
+<main class="wrap" id="body">
+<div class="prose">
+
+  <p>Ox Alpha appeared on OpenRouter on 20 August 2026 with no lab attached to it. It takes text, images and video, reads 1,048,576 tokens in one go, writes up to 131,072, and costs nothing while the preview lasts. OpenCode announced the free window as "the next week" without a timestamp, so plan around <strong>27 August</strong> and expect it to end without warning.</p>
+
+  <p>The part worth understanding before you install anything: there is one model, sitting behind a handful of gateways, and every tool below reaches it over the same OpenAI-shaped API. Once you know that, picking a route is a two-minute decision instead of five signups.</p>
+
+  <figure class="dwg">
+    <div class="pan">
+    <svg viewBox="0 0 700 272" role="img" aria-labelledby="routes-title routes-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="routes-title">How the routes connect</title>
+      <desc id="routes-desc">Four gateways — OpenRouter, OpenCode Zen, Venice and Nous Portal — all expose Ox Alpha over an OpenAI-compatible chat completions endpoint. Four kinds of client sit on the other side of that endpoint: the opencode CLI, Command Code, Hermes Agent, and any code using an OpenAI SDK.</desc>
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="oklch(0.775 0.022 240)"/></marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="13" fill="oklch(0.945 0.012 240)">
+
+        <text x="1" y="14" font-size="11" fill="oklch(0.610 0.028 245)">gateways — where the model lives</text>
+
+        <rect x="1" y="22" width="200" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="41">OpenRouter</text>
+        <text x="13" y="56" font-size="11" fill="oklch(0.610 0.028 245)">stealth/ox-alpha</text>
+
+        <rect x="1" y="78" width="200" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="97">OpenCode Zen</text>
+        <text x="13" y="112" font-size="11" fill="oklch(0.610 0.028 245)">opencode/x-preview-f-free</text>
+
+        <rect x="1" y="134" width="200" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="153">Venice</text>
+        <text x="13" y="168" font-size="11" fill="oklch(0.610 0.028 245)">stealth-ox-alpha</text>
+
+        <rect x="1" y="190" width="200" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="209">Nous Portal</text>
+        <text x="13" y="224" font-size="11" fill="oklch(0.610 0.028 245)">one OAuth login</text>
+
+        <path d="M201 43 H254" fill="none" stroke="oklch(0.775 0.022 240)"/>
+        <path d="M201 99 H254" fill="none" stroke="oklch(0.775 0.022 240)"/>
+        <path d="M201 155 H254" fill="none" stroke="oklch(0.775 0.022 240)"/>
+        <path d="M201 211 H254" fill="none" stroke="oklch(0.775 0.022 240)"/>
+
+        <rect x="254" y="22" width="56" height="210" fill="oklch(0.840 0.120 200 / 0.14)" stroke="oklch(0.840 0.120 200)"/>
+        <text x="282" y="127" text-anchor="middle" fill="oklch(0.840 0.120 200)" font-size="12" transform="rotate(-90 282 127)">POST /v1/chat/completions</text>
+
+        <path d="M310 43 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar)"/>
+        <path d="M310 99 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar)"/>
+        <path d="M310 155 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar)"/>
+        <path d="M310 211 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar)"/>
+
+        <text x="406" y="14" font-size="11" fill="oklch(0.610 0.028 245)">clients — where you type</text>
+
+        <rect x="406" y="22" width="293" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="41">opencode</text>
+        <text x="418" y="56" font-size="11" fill="oklch(0.610 0.028 245)">terminal agent, /connect then /models</text>
+
+        <rect x="406" y="78" width="293" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="97">Command Code</text>
+        <text x="418" y="112" font-size="11" fill="oklch(0.610 0.028 245)">ships the model itself, no key to paste</text>
+
+        <rect x="406" y="134" width="293" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="153">Hermes Agent</text>
+        <text x="418" y="168" font-size="11" fill="oklch(0.610 0.028 245)">borrows OpenRouter, Zen or the Portal</text>
+
+        <rect x="406" y="190" width="293" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="209">Your own code</text>
+        <text x="418" y="224" font-size="11" fill="oklch(0.610 0.028 245)">any OpenAI SDK, swap base URL + key</text>
+
+        <text x="350" y="258" text-anchor="middle" font-size="11" fill="oklch(0.610 0.028 245)">one model · four gateways · every client speaks the same endpoint</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>fig. 1 — nothing on the right is a different model. Pick the row you already live in.</figcaption>
+  </figure>
+
+  <h2>The five routes at a glance</h2>
+
+  <div class="tablewrap">
+    <table class="spec">
+      <thead>
+        <tr><th scope="col">Route</th><th scope="col">Model id</th><th scope="col">What happens to your prompts</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>OpenRouter</td><td><code>stealth/ox-alpha</code></td><td>Retained by the anonymous provider, not used for training</td></tr>
+        <tr><td>OpenCode Zen</td><td><code>opencode/x-preview-f-free</code></td><td>Zero retention, no training</td></tr>
+        <tr><td>Command Code</td><td><code>stealth/ox-alpha</code></td><td>Zero retention per Command Code's announcement</td></tr>
+        <tr><td>Hermes Agent</td><td>picked in <code>hermes model</code></td><td>Inherits whichever gateway you point it at</td></tr>
+        <tr><td>Venice</td><td><code>stealth-ox-alpha</code></td><td>Inherits Venice's privacy policy</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Those retention terms are not the same policy written four ways. OpenRouter's own model card says the provider keeps prompts and completions; OpenCode Zen says it keeps nothing. If you care about the difference, the route you pick <em>is</em> the decision.</p>
+
+  <h2>Setting each one up</h2>
+
+  <ol class="proc">
+
+    <li>
+      <h3>OpenRouter: the one to try first</h3>
+      <p>Fastest way to see it work with no install at all: open <a href="https://openrouter.ai/stealth/ox-alpha">the model page</a>, sign in, and type into the playground. Nothing to configure and no card.</p>
+      <p>For code, make a key at <code>openrouter.ai/keys</code> and call it like any OpenAI endpoint:</p>
+<pre><code>curl https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"stealth/ox-alpha",
+       "messages":[{"role":"user","content":"port this file to typescript"}]}'</code></pre>
+      <p>Same two values work in any OpenAI SDK: base URL <code>https://openrouter.ai/api/v1</code>, model <code>stealth/ox-alpha</code>. OpenRouter's documented free-tier caps (20 requests a minute, 50 a day, or 1,000 a day once you have ever bought $10 of credit) are written for model ids ending in <code>:free</code>. Ox Alpha is priced at zero without that suffix, so treat "generous rate limits" as an unmeasured promise rather than a number you can plan a job around.</p>
+    </li>
+
+    <li>
+      <h3>opencode: if you already work in a terminal agent</h3>
+<pre><code>curl -fsSL https://opencode.ai/install | bash   # or: npm i -g opencode-ai
+cd your-project
+opencode</code></pre>
+      <p>Inside the TUI: <code>/connect</code>, pick OpenCode Zen, paste the key it gives you, then <code>/models</code> and choose <strong>Ox Alpha Free</strong>. Use the picker rather than hard-coding the id, because this is a preview alias and it can be renamed under you. If the list is empty, the ids are <code>opencode/x-preview-f-free</code> on Zen and <code>opencode-go/ox-alpha-free</code> on the Go plan.</p>
+      <p>Then <code>/init</code> so the agent writes itself a map of the repo before it starts editing.</p>
+    </li>
+
+    <li>
+      <h3>Command Code: no key to paste</h3>
+<pre><code>npm i -g command-code
+cd your-project
+cmd --model stealth/ox-alpha</code></pre>
+      <p>Command Code carries the model on every plan including the free one, so there is no gateway signup in the middle. <code>/model</code> switches mid-session without dropping context. They also say they built a tool-repair harness around it after benchmarking roughly 5B tokens, which matters more than it sounds. See the tool-call error rate further down.</p>
+    </li>
+
+    <li>
+      <h3>Hermes Agent: if you want it in chat apps, not a terminal</h3>
+<pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+hermes portal    # browser login
+hermes model     # pick Ox Alpha
+hermes</code></pre>
+      <p>Hermes is MIT-licensed and runs the same agent through Telegram, Discord, Slack, WhatsApp, Signal, email or the CLI, which is the reason to pick it over the others. It does not host Ox Alpha itself; it routes through Nous Portal, OpenCode or OpenRouter, so set <code>provider</code> and the model slug in <code>~/.hermes/.env</code> if you would rather bring your own OpenRouter key. Give it 64k of context or more; below that it misbehaves.</p>
+    </li>
+
+    <li>
+      <h3>Venice: if you want privacy framing and a chat window</h3>
+      <p>Venice lists it as <code>stealth-ox-alpha</code>, free, in the chat app at <code>venice.ai/chat</code>. For the API, make a key in <code>venice.ai/settings/api</code> and point an OpenAI client at <code>https://api.venice.ai/api/v1</code>. Same request shape as OpenRouter, different base URL and slug.</p>
+    </li>
+
+  </ol>
+
+  <div class="annot">
+    <span class="tag">before you paste anything</span>
+    <p>Nobody has claimed this model. You are sending your code to an operator with no name, no jurisdiction and no support contract, and on the OpenRouter route they explicitly keep what you send. That is fine for a side project or a refactor of open-source code. It is not fine for client work, credentials, or anything under an NDA — and no route's privacy wording changes who is actually on the other end.</p>
+  </div>
+
+  <h2>Is it actually good, or is it just free</h2>
+
+  <p>The number that started the noise comes from a community run on a ten-task DeepSWE subset. Small sample, not an official leaderboard, but the gap is wide enough to be interesting:</p>
+
+  <figure class="dwg">
+    <div class="pan">
+    <svg viewBox="0 0 700 208" role="img" aria-labelledby="bench-title bench-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="bench-title">DeepSWE subset scores</title>
+      <desc id="bench-desc">On a ten-task DeepSWE subset: Ox Alpha 80 percent, Claude Fable 5 65 percent, GLM-5.3 62 percent, Grok 4.6 62 percent, GPT-5.6 Sol 52 percent.</desc>
+      <g font-family="IBM Plex Mono, monospace" font-size="12.5" fill="oklch(0.945 0.012 240)">
+        <line x1="160" y1="14" x2="160" y2="180" stroke="oklch(0.360 0.040 250)"/>
+
+        <text x="150" y="31" text-anchor="end" fill="oklch(0.840 0.120 200)">Ox Alpha</text>
+        <rect x="160" y="18" width="416" height="18" fill="oklch(0.840 0.120 200)"/>
+        <text x="586" y="31" fill="oklch(0.840 0.120 200)">80%</text>
+
+        <text x="150" y="64" text-anchor="end" fill="oklch(0.775 0.022 240)">Claude Fable 5</text>
+        <rect x="160" y="51" width="338" height="18" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="508" y="64" fill="oklch(0.775 0.022 240)">65%</text>
+
+        <text x="150" y="97" text-anchor="end" fill="oklch(0.775 0.022 240)">GLM-5.3</text>
+        <rect x="160" y="84" width="322" height="18" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="492" y="97" fill="oklch(0.775 0.022 240)">62%</text>
+
+        <text x="150" y="130" text-anchor="end" fill="oklch(0.775 0.022 240)">Grok 4.6</text>
+        <rect x="160" y="117" width="322" height="18" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="492" y="130" fill="oklch(0.775 0.022 240)">62%</text>
+
+        <text x="150" y="163" text-anchor="end" fill="oklch(0.775 0.022 240)">GPT-5.6 Sol</text>
+        <rect x="160" y="150" width="270" height="18" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="440" y="163" fill="oklch(0.775 0.022 240)">52%</text>
+
+        <text x="160" y="198" font-size="11" fill="oklch(0.610 0.028 245)">ten tasks, one community run — a signal, not a ranking</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>fig. 2 — the shock is not the score. It is that the row on top has no name on it and costs nothing.</figcaption>
+  </figure>
+
+  <p>What the hype posts leave out, all of it from OpenRouter's own live metrics on the model:</p>
+
+  <ul>
+    <li>Median throughput sits around 19–24 tokens a second. It is not fast, it is thorough. Long agent runs feel slow.</li>
+    <li>Average tool-call error rate of <strong>2.16%</strong>, which is exactly why Command Code wrote a repair harness around it.</li>
+    <li>It accepts <code>response_format: json_object</code> but does <strong>not</strong> enforce a JSON schema. Anything downstream that assumes strict structured output needs its own validation.</li>
+    <li>It is labelled a reasoning model, yet the live traffic breakdown reports zero reasoning tokens. Nobody outside the lab knows what that means.</li>
+  </ul>
+
+  <div class="annot">
+    <span class="tag">note</span>
+    <p>This is the fifth anonymous model dropped on OpenRouter in six months, and the previous four were all later claimed by Chinese labs — Zhipu, Xiaomi, Ant and Meituan. Ox Alpha's tokenizer is a near-exact match for GLM's, and one researcher says a deliberately malformed request made the server return a Java stack trace on a route matching Zhipu's documented API path. Strong circumstantial evidence, not a confirmation. No lab has claimed it.</p>
+  </div>
+
+  <h2>When the free week ends</h2>
+
+  <p>Every previous stealth drop either renamed itself, moved to paid, or vanished. Two things make that survivable: keep the model id in one config value rather than sprinkled through your code, and stay on an OpenAI-compatible gateway so switching to whatever replaces it is a two-line change. If the model does get claimed, the same weights will almost certainly reappear under a real name and a real price.</p>
+
+  <div class="annot">
+    <span class="tag">if you copy one thing</span>
+    <p>Take the OpenRouter playground route first, spend ten minutes on a real task from your own repo, and decide from that. Every provider on this page is repeating the same benchmark screenshot at you. Ten minutes of your own code is worth more than all of them.</p>
+  </div>
+
+</div>
+</main>
+
+<footer class="guide-foot"><div class="wrap">
+  <p>This sheet backs the video on the anonymous model that beat GPT-5.6 Sol and Claude Fable 5 at coding. Provider list from <a href="https://x.com/qilua02/status/2090997310008541613">@qilua02</a>.</p>
+  <p class="nav"><a href="../../">All sheets</a> · <a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a></p>
+</div></footer>
+
+</body>
+</html>

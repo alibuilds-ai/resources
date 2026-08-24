@@ -141,6 +141,23 @@ a { color: var(--draw); }
 .prose code { font-family: var(--mono); font-size: 0.86em; color: var(--draw); background: var(--panel); border: 1px solid var(--stroke); border-radius: 3px; padding: 0.08em 0.34em; }
 .prose pre { font-family: var(--mono); font-size: 0.84rem; line-height: 1.6; background: var(--panel); border: 1px solid var(--stroke); border-radius: 3px; padding: 1rem 1.15rem; overflow-x: auto; }
 .prose pre code { background: none; border: 0; padding: 0; color: var(--ink-2); }
+.prose ul { color: var(--ink-2); padding-left: 1.15rem; margin-block: 1.1rem; }
+.prose ul li { margin-top: 0.5rem; text-wrap: pretty; }
+.prose ul li::marker { color: var(--stroke-2); }
+
+/* spec table: the small matrices a reference sheet needs (ids, endpoints, terms) */
+table.spec { width: 100%; min-width: 30rem; border-collapse: collapse; font-size: 0.875rem; }
+table.spec th, table.spec td { padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--stroke); }
+table.spec tbody tr:last-child td { border-bottom: 0; }
+table.spec thead th {
+  font-family: var(--mono); font-weight: 500; font-size: 0.625rem;
+  letter-spacing: 0.05em; color: var(--ink-3); background: var(--panel);
+  border-bottom: 1px solid var(--stroke-2); white-space: nowrap;
+}
+table.spec td { color: var(--ink-2); }
+table.spec td:first-child { color: var(--ink); font-weight: 500; white-space: nowrap; }
+table.spec code { font-size: 0.8em; white-space: nowrap; }
+.prose .tablewrap { margin-block: 1.75rem; }
 
 /* ordered procedure: the guides genuinely are sequences */
 ol.proc { list-style: none; counter-reset: p; margin: 1.75rem 0; padding: 0; border-left: 1px solid var(--stroke); }
@@ -154,6 +171,7 @@ ol.proc > li::before {
 ol.proc h3 { margin-top: 0; margin-bottom: 0.3rem; }
 ol.proc p { margin: 0 0 0.75rem; }
 ol.proc p:last-child { margin-bottom: 0; }
+ol.proc pre { margin: 0 0 0.75rem; }
 
 .annot { border: 1px dashed var(--stroke-2); padding: 1.1rem 1.2rem; margin: 1.75rem 0; position: relative; }
 .annot .tag { position: absolute; top: -0.55rem; left: 0.9rem; background: var(--ground); padding-inline: 0.4rem; font-family: var(--mono); font-size: 0.625rem; color: var(--mark); letter-spacing: 0.05em; }
@@ -162,6 +180,9 @@ ol.proc p:last-child { margin-bottom: 0; }
 
 figure.dwg { margin: 2rem 0; }
 figure.dwg svg { width: 100%; height: auto; display: block; }
+/* dense drawings stay legible on a phone by panning rather than shrinking */
+figure.dwg .pan { overflow-x: auto; overscroll-behavior-x: contain; }
+figure.dwg .pan > svg { min-width: 33rem; }
 figure.dwg figcaption { font-family: var(--mono); font-size: 0.6875rem; color: var(--ink-3); margin-top: 0.6rem; line-height: 1.5; }
 
 .guide-foot { border-top: 1px solid var(--stroke-2); margin-top: clamp(2.5rem, 6vw, 4rem); padding-block: 1.5rem 3rem; }
