@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The LLM Council · make a model argue with itself before you trust it · alibuilds</title>
+<meta name="description" content="One question, five advisors with opposite instincts, an anonymous peer review, and a chairman who has to pick. The setup and the pipeline, end to end.">
+<meta property="og:title" content="The LLM Council · make a model argue with itself before you trust it">
+<meta property="og:description" content="One question, five advisors with opposite instincts, an anonymous peer review, and a chairman who has to pick. The setup and the pipeline, end to end.">
+<meta property="og:type" content="article">
+<link rel="icon" href="../../assets/icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the guide</a>
+
+<div class="titleblock"><div class="wrap">
+  <div class="tb"><a href="../../"><b>alibuilds</b>resources</a></div>
+  <div class="tb tb-hide">sheet<span class="v"> 03</span></div>
+  <div class="tb tb-hide">rev<span class="v"> 2026.08.25</span></div>
+  <div class="tb"><a href="../../">All sheets</a></div>
+</div></div>
+
+<div class="guide-head"><div class="wrap">
+  <p class="kicker">Method · 25 Aug 2026</p>
+  <h1>The LLM Council: make a model argue with itself before you trust it</h1>
+  <p class="standfirst">Ask a model "should I do X?" and it will say yes. Ask "should I not do X?" and it will agree with that too. The council fixes this by running your decision through five advisors who disagree on purpose, letting them review each other blind, and making one agent own the final call.</p>
+</div></div>
+
+<main class="wrap" id="body">
+<div class="prose">
+
+  <p>Agreeableness is not a bug you can prompt away. Tell the model you are excited about something and watch how fast it finds supporting evidence for your excitement. The framing carries the answer. That is harmless when you are drafting an email and expensive when you are deciding what to build, what to charge, or whether to pivot.</p>
+
+  <p>The method comes from <a href="https://x.com/karpathy/status/1962263486196867115">Andrej Karpathy's LLM Council</a>, adapted to run inside <a href="https://claude.com/claude-code">Claude Code</a> as a single skill — <a href="https://github.com/tenfoldmarc/llm-council-skill">tenfoldmarc/llm-council-skill</a>. One trigger phrase, about four minutes, and you get a verdict instead of a mirror.</p>
+
+  <figure class="dwg">
+    <svg viewBox="0 0 700 190" role="img" aria-labelledby="council-title council-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="council-title">The council pipeline</title>
+      <desc id="council-desc">A raw question is framed into neutral context. Five advisors answer in parallel. Their anonymized responses go through anonymous peer review. A chairman reads all of it and produces a verdict with a recommendation and one first action.</desc>
+      <defs>
+        <marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="oklch(0.775 0.022 240)"/></marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="oklch(0.945 0.012 240)">
+        <rect x="1" y="20" width="104" height="40" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="53" y="40" text-anchor="middle">Your question</text>
+        <text x="53" y="54" text-anchor="middle" font-size="9.5" fill="oklch(0.610 0.028 245)">raw, biased</text>
+
+        <line x1="105" y1="40" x2="131" y2="40" stroke="oklch(0.775 0.022 240)" marker-end="url(#ca)"/>
+
+        <rect x="133" y="20" width="104" height="40" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="185" y="40" text-anchor="middle">Frame</text>
+        <text x="185" y="54" text-anchor="middle" font-size="9.5" fill="oklch(0.610 0.028 245)">neutral + context</text>
+
+        <line x1="237" y1="40" x2="263" y2="40" stroke="oklch(0.775 0.022 240)" marker-end="url(#ca)"/>
+
+        <rect x="265" y="4" width="118" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="324" y="25" text-anchor="middle">5 advisors</text>
+        <rect x="265" y="46" width="118" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="324" y="67" text-anchor="middle">in parallel</text>
+
+        <line x1="383" y1="40" x2="409" y2="40" stroke="oklch(0.775 0.022 240)" marker-end="url(#ca)"/>
+
+        <rect x="411" y="20" width="128" height="40" fill="none" stroke="oklch(0.790 0.155 55)"/>
+        <text x="475" y="40" text-anchor="middle" fill="oklch(0.790 0.155 55)">Blind peer review</text>
+        <text x="475" y="54" text-anchor="middle" font-size="9.5" fill="oklch(0.610 0.028 245)">responses A–E</text>
+
+        <line x1="539" y1="40" x2="565" y2="40" stroke="oklch(0.775 0.022 240)" marker-end="url(#ca)"/>
+
+        <rect x="567" y="20" width="132" height="40" fill="oklch(0.840 0.120 200)"/>
+        <text x="633" y="40" text-anchor="middle" fill="oklch(0.192 0.036 255)">Chairman verdict</text>
+        <text x="633" y="54" text-anchor="middle" font-size="9.5" fill="oklch(0.192 0.036 255 / 0.75)">+ one first action</text>
+      </g>
+    </svg>
+    <figcaption>fig. 1 — the anonymity is load-bearing. Reviewers who know who wrote a response grade the voice, not the argument.</figcaption>
+  </figure>
+
+  <h2>The five seats</h2>
+
+  <p>These are not personas with backstories. They are thinking styles chosen because they grind against each other:</p>
+
+  <ul>
+    <li><strong>The Contrarian.</strong> Assumes the idea has a fatal flaw and hunts for it. What breaks, what's missing, what quietly kills this in six months.</li>
+    <li><strong>The First Principles Thinker.</strong> Refuses the question as asked. Asks what you are actually trying to solve, strips the assumptions, rebuilds from zero.</li>
+    <li><strong>The Expansionist.</strong> Hunts upside the others are ignoring. What could this be if it works? Deliberately does not care about risk — that seat already exists.</li>
+    <li><strong>The Outsider.</strong> Knows nothing about you or your field. Catches every curse-of-knowledge assumption baked into your question — the things obvious to you and opaque to everyone else.</li>
+    <li><strong>The Executor.</strong> Only asks one thing: what happens Monday morning? A brilliant plan with no first step gets called out by name.</li>
+  </ul>
+
+  <p>Three tensions come free with this cast: Contrarian vs Expansionist is downside vs upside, First Principles vs Executor is rethink-everything vs just-start, and the Outsider keeps both sides honest about what a stranger could even follow. Read any single advisor alone and you get half an opinion. The value is that they cannot all be flattered at once.</p>
+
+  <h2>Install</h2>
+
+  <p>Claude Code and a terminal are the only prerequisites. One command installs it globally:</p>
+
+<pre><code>git clone https://github.com/tenfoldmarc/llm-council-skill ~/.claude/skills/llm-council</code></pre>
+
+  <p>Because it lives under <code>~/.claude/skills/</code>, it works in every project on the machine — no per-project setup. The manual route is the same thing by hand: create the folder, paste the repo's SKILL.md into it, restart Claude Code.</p>
+
+  <h2>Running it</h2>
+
+  <p>Say any of these followed by your actual question: <code>council this</code>, <code>run the council</code>, <code>pressure-test this</code>, <code>war room this</code>. Then give it real inputs — numbers, constraints, what you already tried. Vague questions in, vague verdict out.</p>
+
+  <p>What happens under the hood, five steps:</p>
+
+  <ol class="proc">
+
+    <li>
+      <h3>Frame the question</h3>
+      <p>The skill scans your workspace (project docs, memory files) and rewrites your question into a neutral brief. Your enthusiasm and your preferred answer get stripped out so all five advisors start from the same clean ground.</p>
+    </li>
+
+    <li>
+      <h3>Spawn five advisors in parallel</h3>
+      <p>Each sub-agent gets its thinking style plus one instruction: commit fully to your perspective. No hedging, no balance. Synthesis is somebody else's job.</p>
+    </li>
+
+    <li>
+      <h3>Anonymize and peer-review</h3>
+      <p>This is what separates it from "ask five times". Responses become A through E, shuffled so position can't bias anyone, and fresh reviewers grade all five blind: strongest response, biggest blind spot, and — the useful one — what did every single response miss?</p>
+    </li>
+
+    <li>
+      <h3>Chairman synthesis</h3>
+      <p>One agent reads the de-anonymized responses plus every review and produces: where the council agrees, where it genuinely clashes (both sides argued), which blind spots only surfaced in review, a direct recommendation — "it depends" is not allowed — and exactly one thing to do first.</p>
+    </li>
+
+    <li>
+      <h3>Report</h3>
+      <p>A visual HTML report opens automatically alongside a full markdown transcript, so you can rerun the same question later after acting on the advice and diff how the answers moved.</p>
+    </li>
+
+  </ol>
+
+  <h2>What a verdict looks like</h2>
+
+  <p>Taken from a real run — the course-vs-workshop pricing question from the original writeup:</p>
+
+  <div class="annot">
+    <span class="tag">chairman's verdict</span>
+    <p><strong>Agrees:</strong> the audience has real demand for beginner-level help, but framing the product as a developer tool guarantees it misses non-technical buyers.</p>
+    <p><strong>Clashes:</strong> price. The Contrarian says $297 is above market for this buyer; the Expansionist says it leaves money on the table without bundled support to justify more.</p>
+    <p><strong>Blind spot caught:</strong> only the Outsider noticed the target customer has never heard of the tool in the title. Four advisors had silently assumed awareness that doesn't exist.</p>
+    <p><strong>Recommendation:</strong> don't ship the course yet — validate cheap, and sell the outcome (hours back per week), not the tool.</p>
+    <p><strong>First move:</strong> a small live workshop on automating one business task. Tool name nowhere in the marketing.</p>
+  </div>
+
+  <p>Note the shape: no advisor said "it depends", and the chairman did not average the room. When four advisors say go and the fifth dissenter has the strongest reasoning, the chairman sides with the dissenter. That is by design — consensus is not evidence.</p>
+
+  <h2>Worth a council, not worth a council</h2>
+
+  <div class="tablewrap">
+    <table class="spec">
+      <thead>
+        <tr><th scope="col">Bring it here</th><th scope="col">Skip it here</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Pricing decisions, launches, pivots, hires</td><td>Factual questions with a correct answer</td></tr>
+        <tr><td>Choosing between positioning angles</td><td>Pure creation work ("write me a post")</td></tr>
+        <tr><td>"Am I crazy to move from X to Y?"</td><td>Summaries and processing tasks</td></tr>
+        <tr><td>Tearing apart copy or a landing page</td><td>Validation you're seeking when you already know</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="annot">
+    <span class="tag">note</span>
+    <p>The council telling you something you didn't want to hear is the product working. If a run agrees with you completely, treat that as suspicious rather than reassuring and check what the Outsider flagged.</p>
+  </div>
+
+  <h2>Getting the most out of a run</h2>
+
+  <ul>
+    <li><strong>Load the input.</strong> Numbers, constraints, prior attempts. The advisors can only argue about what you gave them.</li>
+    <li><strong>Spend it on expensive mistakes.</strong> Anything where being wrong costs weeks is a good candidate; anything reversible isn't.</li>
+    <li><strong>Read the Outsider first.</strong> Consistently the most surprising seat, because it sees only what your question actually says.</li>
+    <li><strong>Keep transcripts.</strong> Rerunning the same question after changes shows you how the decision moved — the transcript pair is the record.</li>
+  </ul>
+
+  <h2>Credits</h2>
+
+  <p>Methodology: Andrej Karpathy's <a href="https://x.com/karpathy/status/1962263486196867115">LLM Council</a>. Claude Code skill adaptation by <a href="https://github.com/tenfoldmarc/llm-council-skill">tenfoldmarc/llm-council-skill</a>; original setup guide by Liam Johnston.</p>
+
+  <div class="annot">
+    <span class="tag">if you copy one thing</span>
+    <p>Copy the blind review step. Five opinions are easy to get; five opinions that have been graded anonymously by agents with no stake in being polite is where the first-answer bias actually dies.</p>
+  </div>
+
+</div>
+</main>
+
+<footer class="guide-foot"><div class="wrap">
+  <p>This sheet backs the video on the LLM council method.</p>
+  <p class="nav"><a href="../../">All sheets</a> · <a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a></p>
+</div></footer>
+
+</body>
+</html>
