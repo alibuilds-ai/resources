@@ -39,6 +39,9 @@ python3 assets/icons/make-icons.py               # regenerate all three
    (craft). Leave it off and the chip falls back to the neutral style.
    `data-tags` on the row stays plain text and only feeds search.
 4. Update the `sheet NN` labels in the hero dimension line.
+5. Run the body text through the humanizer skill before publishing. No AI-tell
+   prose ships: no bolded inline-header lists, no significance inflation,
+   no em-dash chains, no rule-of-three padding.
 
 ## Local preview
 
