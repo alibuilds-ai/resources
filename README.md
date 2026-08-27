@@ -39,7 +39,13 @@ python3 assets/icons/make-icons.py               # regenerate all three
    (craft). Leave it off and the chip falls back to the neutral style.
    `data-tags` on the row stays plain text and only feeds search.
 4. Update the `sheet NN` labels in the hero dimension line.
-5. Run the body text through the humanizer skill before publishing. No AI-tell
+5. Every tool, repo, model or service named in a sheet gets a direct link the
+   first time it appears, and always in the `Repo` / source column of a
+   `table.spec`. Link the whole cell (`<a><code>owner/repo</code></a>`), point
+   at the exact page rather than the org root (a plugin links to its own
+   subdirectory), and curl each URL for a 200 before publishing. A reader who
+   wants the thing should never have to search for it.
+6. Run the body text through the humanizer skill before publishing. No AI-tell
    prose ships: no bolded inline-header lists, no significance inflation,
    no em-dash chains, no rule-of-three padding.
 
