@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five free plugins your Claude Code setup is missing · alibuilds</title>
+<meta name="description" content="OmniRoute, the Skills CLI, Anthropic's Claude Code Setup plugin, Strix and Agent Reach: what each one removes from your setup, and the exact command to install it.">
+<meta property="og:title" content="Five free plugins your Claude Code setup is missing">
+<meta property="og:description" content="OmniRoute, the Skills CLI, Anthropic's Claude Code Setup plugin, Strix and Agent Reach: what each one removes from your setup, and the exact command to install it.">
+<meta property="og:type" content="article">
+<link rel="icon" href="../../assets/icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the guide</a>
+
+<div class="titleblock"><div class="wrap">
+  <div class="tb"><a href="../../"><b>alibuilds</b>resources</a></div>
+  <div class="tb tb-hide">sheet<span class="v"> 05</span></div>
+  <div class="tb tb-hide">rev<span class="v"> 2026.08.27</span></div>
+  <div class="tb"><a href="../../">All sheets</a></div>
+</div></div>
+
+<div class="guide-head"><div class="wrap">
+  <p class="kicker">Reference · 27 Aug 2026</p>
+  <h1>Five free plugins your Claude Code setup is missing</h1>
+  <p class="standfirst">Each one takes a specific limit out of your setup: the usage wall, the hour you spend picking skills, the config nobody audits, the vulnerability you ship, the site that blocked its API. Repo, install command and the catch for all five.</p>
+</div></div>
+
+<main class="wrap" id="body">
+<div class="prose">
+
+  <p>These are five separate projects, four of them from outside Anthropic, and they solve five unrelated problems. What ties them together is that none of them changes how you write prompts. They change what sits around Claude Code: the gateway in front of it, the skills inside it, the config underneath it, the scan after it, the internet beside it.</p>
+
+  <p>Everything below is free and open source, with the licence and the star count as of 27 August 2026. Star counts move; the commands do not.</p>
+
+  <figure class="dwg">
+    <div class="pan">
+    <svg viewBox="0 0 700 268" role="img" aria-labelledby="map-title map-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="map-title">Where each plugin sits</title>
+      <desc id="map-desc">Five limits in a Claude Code setup, each answered by one tool. Usage limit reached is answered by OmniRoute. Picking skills by hand is answered by the Skills CLI. Config nobody audits is answered by the Claude Code Setup plugin. Vulnerabilities shipped to production are answered by Strix. Gated platforms with no API are answered by Agent Reach.</desc>
+      <defs>
+        <marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="oklch(0.775 0.022 240)"/></marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="13" fill="oklch(0.945 0.012 240)">
+
+        <text x="1" y="14" font-size="11" fill="oklch(0.610 0.028 245)">the limit you hit</text>
+        <text x="406" y="14" font-size="11" fill="oklch(0.610 0.028 245)">what removes it</text>
+
+        <rect x="1" y="22" width="250" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="44">usage limit reached</text>
+        <path d="M251 39 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#a5)"/>
+        <rect x="406" y="22" width="293" height="34" fill="oklch(0.840 0.120 200 / 0.14)" stroke="oklch(0.840 0.120 200)"/>
+        <text x="418" y="44" fill="oklch(0.840 0.120 200)">OmniRoute</text>
+
+        <rect x="1" y="68" width="250" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="90">picking skills by hand</text>
+        <path d="M251 85 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#a5)"/>
+        <rect x="406" y="68" width="293" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="90">Skills CLI · find-skills</text>
+
+        <rect x="1" y="114" width="250" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="136">config nobody audits</text>
+        <path d="M251 131 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#a5)"/>
+        <rect x="406" y="114" width="293" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="136">Claude Code Setup</text>
+
+        <rect x="1" y="160" width="250" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="182">vulns you ship</text>
+        <path d="M251 177 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#a5)"/>
+        <rect x="406" y="160" width="293" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="182">Strix</text>
+
+        <rect x="1" y="206" width="250" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="228">sites with no open API</text>
+        <path d="M251 223 H402" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#a5)"/>
+        <rect x="406" y="206" width="293" height="34" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="418" y="228">Agent Reach</text>
+
+        <text x="350" y="262" text-anchor="middle" font-size="11" fill="oklch(0.610 0.028 245)">install the row whose left side you actually hit this week</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>fig. 1 — five unrelated problems. Nothing here needs the other four to be useful.</figcaption>
+  </figure>
+
+  <h2>The five at a glance</h2>
+
+  <div class="tablewrap">
+    <table class="spec">
+      <thead>
+        <tr><th scope="col">Tool</th><th scope="col">Repo</th><th scope="col">Licence</th><th scope="col">Stars</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>OmniRoute</td><td><code>diegosouzapw/OmniRoute</code></td><td>MIT</td><td>56.8k</td></tr>
+        <tr><td>Skills CLI</td><td><code>npx skills</code> · <a href="https://skills.sh/">skills.sh</a></td><td>open ecosystem</td><td>—</td></tr>
+        <tr><td>Claude Code Setup</td><td><code>anthropics/claude-plugins-official</code></td><td>Anthropic</td><td>—</td></tr>
+        <tr><td>Strix</td><td><code>usestrix/strix</code></td><td>Apache-2.0</td><td>58.8k</td></tr>
+        <tr><td>Agent Reach</td><td><code>Panniantong/Agent-Reach</code></td><td>open source</td><td>75.9k</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Installing each one</h2>
+
+  <ol class="proc">
+
+    <li>
+      <h3>OmniRoute: the usage wall</h3>
+      <p>A local gateway that speaks the OpenAI API and sits between your CLI and every provider it knows about. Install it and it boots on <code>localhost:20128</code> with no key and no signup, because a couple of keyless free providers are pre-wired into the default combo.</p>
+<pre><code>npm i -g omniroute
+omniroute                       # gateway + dashboard on :20128
+
+curl http://localhost:20128/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model":"auto","messages":[{"role":"user","content":"hello"}]}'</code></pre>
+      <p>Point any OpenAI-compatible tool at <code>http://localhost:20128/v1</code>: Claude Code, Codex, Cursor, Cline, OpenCode, Copilot. The repo claims 350 providers, 90+ of them free, and 1,200+ models. The part that matters day to day is the cascade: it routes across four tiers (your subscription, then your API keys, then cheap, then free) and falls through to the next healthy target when one runs out, so a quota that empties mid-session does not end the session.</p>
+      <p>It also exposes itself over MCP if you would rather the agent drive the gateway than read a config file:</p>
+<pre><code>claude mcp add-server omniroute --type http \
+  --url http://localhost:20128/api/mcp/stream</code></pre>
+    </li>
+
+    <li>
+      <h3>Skills CLI: picking skills by hand</h3>
+      <p>Skills are packaged expertise an agent loads on demand, and the ecosystem is now large enough that browsing it manually is the slow path. The CLI searches it from a description of the job:</p>
+<pre><code>npx skills find "scrape a site with no api"
+npx skills add agent-reach
+npx skills check                # what has updates
+npx skills update</code></pre>
+      <p>The <code>find-skills</code> skill wraps the same CLI so the agent runs the search itself when you describe a task it has no skill for. Browse the registry at <a href="https://skills.sh/">skills.sh</a> if you want to see what exists before installing anything.</p>
+    </li>
+
+    <li>
+      <h3>Claude Code Setup: the config nobody audits</h3>
+      <p>Anthropic's own plugin, from the official marketplace. It reads the codebase and recommends the top one or two automations per category: MCP servers, skills, hooks, subagents, slash commands.</p>
+<pre><code>/plugin install claude-code-setup@claude-plugins-official</code></pre>
+      <p>Then ask it in plain language: <em>recommend automations for this project</em>, or <em>what hooks should I use</em>. Read the output as a proposal, not a migration. The skill is read-only by design and will not touch your files, so adding or removing anything is still your keystroke.</p>
+    </li>
+
+    <li>
+      <h3>Strix: the vulnerability you were about to ship</h3>
+      <p>An agent that attacks a running app the way an attacker would, then reports what it found with a working proof of concept rather than a severity label. Needs Docker running and an LLM key from any supported provider.</p>
+<pre><code>curl -sSL https://strix.ai/install | bash
+
+export STRIX_LLM="openai/gpt-5.4"
+export LLM_API_KEY="your-api-key"
+
+strix --target ./app-directory</code></pre>
+      <p>First run pulls the sandbox image, and results land in <code>strix_runs/&lt;run-name&gt;</code>. It takes a repo and a live URL in the same command (<code>strix -t https://github.com/org/app -t https://your-app.com</code>), which is the mode worth using: source plus running instance beats either alone.</p>
+    </li>
+
+    <li>
+      <h3>Agent Reach: the platforms that closed their API</h3>
+      <p>One CLI that reads and searches across 13 platforms (Twitter/X, Reddit, YouTube, GitHub, LinkedIn, Bilibili, XiaoHongShu and more), routing each one to whichever backend currently works, with no per-platform API bill. Six channels need no key at all.</p>
+<pre><code>agent-reach doctor --json       # which backend serves each platform</code></pre>
+      <p>Installation runs through the agent: point it at <code>docs/install.md</code> in the repo and let it do the environment checks. By default <code>agent-reach install</code> only inspects your environment and writes nothing; it needs <code>--system</code> before it will install system packages. Run <code>doctor</code> first, always. It tells you which platforms are live for you right now instead of failing halfway through a research run.</p>
+    </li>
+
+  </ol>
+
+  <div class="annot">
+    <span class="tag">the honest catch</span>
+    <p>Free routing is not free capability. OmniRoute's free tier is a pool of other people's free tiers, which means variable latency, variable model quality and providers that disappear. Keep the model id in one config value and treat the free lane as a fallback for grunt work, not as the thing your paid work depends on.</p>
+  </div>
+
+  <div class="annot">
+    <span class="tag">before you point Strix at anything</span>
+    <p>Only scan what you own or have written permission to test. Strix drives a real attack against a real target, and pointing it at someone else's app is not a grey area.</p>
+  </div>
+
+  <h2>If you install one</h2>
+
+  <p>Take OmniRoute if you hit the wall most afternoons, Strix if you ship anything with a login. Those two change what you can do. The other three change how long it takes you to do it, which matters, but only once the first two are handled.</p>
+
+</div>
+</main>
+
+<footer class="guide-foot"><div class="wrap">
+  <p>This sheet backs the carousel and video on the five free plugins for Claude Code. Tool list via <a href="https://www.instagram.com/nicksaraev/">Nick Saraev</a>; every command here was checked against the project's own repo on 27 Aug 2026.</p>
+  <p class="nav"><a href="../../">All sheets</a> · <a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a></p>
+</div></footer>
+
+</body>
+</html>
