@@ -1,0 +1,123 @@
+# Install to /data/coolify/proxy/dynamic/alibuilds-blog.yaml on warmline-box.
+# Traefik watches that directory, so it reloads without a restart.
+#
+# TLS is a Let's Encrypt cert over an HTTP-01 challenge, same as zernio-hook.
+# That only works because alibuilds.blog is proxied by Cloudflare: DOCKER-USER
+# admits Cloudflare IP ranges alone on 80/443, and Cloudflare forwards the
+# challenge from one of those. Grey-clouding the record breaks issuance.
+#
+# Router priorities are load-bearing. /resources sits at 100; the bare-host
+# catch-all sits at 1. The future alibuilds.blog home page / school app takes
+# the priority-1 slot and /resources keeps serving untouched.
+#
+# Middleware names are prefixed `ab-` because the Traefik file provider shares
+# one middleware namespace across every file in dynamic/ (warmline.yaml owns
+# the unprefixed `to-https`).
+
+http:
+  routers:
+    # ---- /resources -> the static site ----
+    alibuilds-resources:
+      rule: "Host(`alibuilds.blog`) && PathPrefix(`/resources`)"
+      entryPoints: ["https"]
+      tls:
+        certResolver: letsencrypt
+        # Named explicitly so Traefik resolves this cert from the router
+        # config rather than inferring it from the rule. Without a real cert
+        # here the origin falls back to TRAEFIK DEFAULT CERT, which only
+        # survives Cloudflare SSL mode "Full" (encrypted but unauthenticated).
+        domains:
+          - main: "alibuilds.blog"
+      service: alibuilds-blog
+      middlewares: ["ab-headers"]
+      priority: 100
+
+    # ---- bare host -> temporary redirect to /resources/ ----
+    # 302, not 301: the home page is coming and a 301 would be cached in
+    # browsers long after it lands. Replace this router with the app when built.
+    alibuilds-root-redirect:
+      rule: "Host(`alibuilds.blog`)"
+      entryPoints: ["https"]
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "alibuilds.blog"
+      service: alibuilds-blog
+      middlewares: ["ab-root-to-resources"]
+      priority: 1
+
+    # ---- :80 -> :443 ----
+    alibuilds-http-redirect:
+      rule: "Host(`alibuilds.blog`)"
+      entryPoints: ["http"]
+      service: alibuilds-blog
+      middlewares: ["ab-to-https"]
+      priority: 1
+
+    # ---- www -> apex ----
+    # One canonical host. 301 is correct here: www will never serve anything.
+    alibuilds-www-redirect:
+      rule: "Host(`www.alibuilds.blog`)"
+      entryPoints: ["https"]
+      tls:
+        certResolver: letsencrypt
+      service: alibuilds-blog
+      middlewares: ["ab-www-to-apex"]
+      priority: 1
+
+    alibuilds-www-http-redirect:
+      rule: "Host(`www.alibuilds.blog`)"
+      entryPoints: ["http"]
+      service: alibuilds-blog
+      middlewares: ["ab-to-https"]
+      priority: 1
+
+  middlewares:
+    ab-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    ab-root-to-resources:
+      redirectRegex:
+        regex: "^https?://alibuilds\\.blog/?$"
+        replacement: "https://alibuilds.blog/resources/"
+        permanent: false
+
+    ab-www-to-apex:
+      redirectRegex:
+        regex: "^https?://www\\.alibuilds\\.blog/(.*)$"
+        replacement: "https://alibuilds.blog/${1}"
+        permanent: true
+
+    ab-headers:
+      headers:
+        stsSeconds: 31536000
+        # No includeSubDomains: hooks.alibuilds.blog is a separate service and
+        # must not inherit this site's transport policy.
+        stsIncludeSubdomains: false
+        stsPreload: false
+        contentTypeNosniff: true
+        browserXssFilter: false
+        referrerPolicy: "strict-origin-when-cross-origin"
+        frameDeny: true
+        customResponseHeaders:
+          X-Robots-Tag: "index, follow"
+          # ponytail: 'unsafe-inline' on script-src covers index.html's inline
+          # search script. Upgrade path: move it to assets/js/search.js and drop
+          # the keyword. Not done during the migration — behaviour stays identical.
+          Content-Security-Policy: >-
+            default-src 'none';
+            script-src 'self' 'unsafe-inline';
+            style-src 'self' https://fonts.googleapis.com;
+            font-src https://fonts.gstatic.com;
+            img-src 'self' data:;
+            connect-src 'none';
+            base-uri 'none';
+            form-action 'none';
+            frame-ancestors 'none'
+
+  services:
+    alibuilds-blog:
+      loadBalancer:
+        servers: [{ url: "http://alibuilds-blog:8080" }]
