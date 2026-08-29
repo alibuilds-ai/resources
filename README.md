@@ -1,7 +1,11 @@
 # alibuilds / resources
 
-The resource hub behind the videos. Static site, no build step, served by GitHub Pages
-at <https://alibuilds-ai.github.io/resources/>.
+The resource hub behind the videos. Static site, no build step, self-hosted at
+<https://alibuilds.blog/resources/>.
+
+The old GitHub Pages host (`alibuilds-ai.github.io/resources/`) now serves redirect
+stubs from the `gh-pages` branch so links in published captions keep working. Never
+publish a new video against that host.
 
 Videos never link to the hub root. Each video links to its own sheet under `guides/`.
 
@@ -48,6 +52,8 @@ python3 assets/icons/make-icons.py               # regenerate all three
 6. Run the body text through the humanizer skill before publishing. No AI-tell
    prose ships: no bolded inline-header lists, no significance inflation,
    no em-dash chains, no rule-of-three padding.
+7. Commit, then `./scripts/deploy.sh`. Nothing is live until you do — pushing to
+   GitHub does not deploy.
 
 ## Local preview
 
@@ -56,6 +62,28 @@ python3 -m http.server 8777 --bind 127.0.0.1
 ```
 
 Then open <http://127.0.0.1:8777/>.
+
+## Deploying
+
+```bash
+./scripts/deploy.sh            # ship to the box + verify the live URLs
+./scripts/deploy.sh --verify   # verify only
+```
+
+Manual and deliberate: tar over SSH into a read-only bind mount on `warmline-box`,
+no build, no CI credentials on the box. Rollback is `git checkout <sha> &&
+./scripts/deploy.sh`.
+
+The site runs as an `nginx-unprivileged` container behind the box's Traefik, with
+Cloudflare in front. `deploy/` holds the three server-side files (nginx config,
+Traefik routers, container run-config) — edit them there, not on the box, then
+reinstall. Changing `deploy/nginx.conf` needs a container restart
+(`/usr/local/sbin/redeploy-resources.sh`), not just an `nginx -s reload`: the config
+is a bind-mounted single file, so replacing it swaps the inode out from under the
+running container.
+
+`alibuilds.blog/` currently 302s to `/resources/`. When the home page is built it
+takes the Traefik priority-1 router and `/resources` is untouched.
 
 ## Design
 
