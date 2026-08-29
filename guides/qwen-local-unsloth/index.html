@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run Qwen3.8-27B on one 24GB GPU · alibuilds</title>
+<meta name="description" content="Which Unsloth quant fits your card, the llama-server command that gives you an OpenAI endpoint, the sampler settings that stop it looping, and how to point a coding agent at it.">
+<meta property="og:title" content="Run Qwen3.8-27B on one 24GB GPU">
+<meta property="og:description" content="Which Unsloth quant fits your card, the llama-server command that gives you an OpenAI endpoint, the sampler settings that stop it looping, and how to point a coding agent at it.">
+<meta property="og:type" content="article">
+<link rel="icon" href="../../assets/icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the guide</a>
+
+<div class="titleblock"><div class="wrap">
+  <div class="tb"><a href="../../"><b>alibuilds</b>resources</a></div>
+  <div class="tb tb-hide">sheet<span class="v"> 07</span></div>
+  <div class="tb tb-hide">rev<span class="v"> 2026.08.29</span></div>
+  <div class="tb"><a href="../../">All sheets</a></div>
+</div></div>
+
+<div class="guide-head"><div class="wrap">
+  <p class="kicker">Reference · 29 Aug 2026</p>
+  <h1>Run Qwen3.8-27B on one 24GB GPU</h1>
+  <p class="standfirst">A 27B vision model with a 256K window, Apache 2.0, that fits in about 17GB once Unsloth has quantised it. Here is which file to download, the one command that turns it into an OpenAI endpoint, the sampler settings it needs, and what you give up by running it at home.</p>
+</div></div>
+
+<main class="wrap" id="body">
+<div class="prose">
+
+  <p><a href="https://huggingface.co/Qwen/Qwen3.8-27B">Qwen3.8-27B</a> is Alibaba's dense 27B release from 14 August 2026, Apache 2.0, with vision and hybrid reasoning and a 256K native context that stretches to 1M with YaRN. At full BF16 precision it wants about 56GB, which is two expensive cards. The reason it is on this sheet is <a href="https://github.com/unslothai/unsloth">Unsloth</a>, whose Dynamic v3 quants get it down to roughly 17GB with most of the quality intact.</p>
+
+  <p>The rule of thumb for what fits where:</p>
+
+  <figure class="dwg">
+    <div class="pan">
+    <svg viewBox="0 0 700 222" role="img" aria-labelledby="vram-title vram-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="vram-title">Memory needed per quantisation</title>
+      <desc id="vram-desc">Approximate memory for Qwen3.8-27B by precision: 1-bit needs 7 to 8GB, 4-bit needs 16 to 19GB, 8-bit needs 31GB, BF16 needs 56GB. A marker shows the 24GB line of a single consumer card, which 1-bit and 4-bit fall under and 8-bit and BF16 do not.</desc>
+      <g font-family="IBM Plex Mono, monospace" font-size="12.5" fill="oklch(0.945 0.012 240)">
+        <line x1="160" y1="14" x2="160" y2="176" stroke="oklch(0.360 0.040 250)"/>
+
+        <line x1="360" y1="14" x2="360" y2="182" stroke="oklch(0.790 0.155 55)" stroke-dasharray="4 3"/>
+        <text x="364" y="196" font-size="11" fill="oklch(0.790 0.155 55)">24GB — one RTX 3090 / 4090 / 5080</text>
+
+        <text x="150" y="31" text-anchor="end" fill="oklch(0.775 0.022 240)">1-bit</text>
+        <rect x="160" y="18" width="67" height="18" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="237" y="31" fill="oklch(0.775 0.022 240)">7–8GB</text>
+
+        <text x="150" y="64" text-anchor="end" fill="oklch(0.840 0.120 200)">4-bit</text>
+        <rect x="160" y="51" width="158" height="18" fill="oklch(0.840 0.120 200)"/>
+        <text x="328" y="64" fill="oklch(0.840 0.120 200)">16–19GB</text>
+
+        <text x="150" y="97" text-anchor="end" fill="oklch(0.775 0.022 240)">8-bit</text>
+        <rect x="160" y="84" width="258" height="18" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="428" y="97" fill="oklch(0.775 0.022 240)">31GB</text>
+
+        <text x="150" y="130" text-anchor="end" fill="oklch(0.775 0.022 240)">BF16</text>
+        <rect x="160" y="117" width="467" height="18" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="637" y="130" fill="oklch(0.775 0.022 240)">56GB</text>
+
+        <text x="160" y="166" font-size="11" fill="oklch(0.610 0.028 245)">4-bit is the one to take. It is the last row that fits a single card with room for context.</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>fig. 1 — the whole decision is which side of the dashed line you are on.</figcaption>
+  </figure>
+
+  <div class="tablewrap">
+    <table class="spec">
+      <thead>
+        <tr><th scope="col">Piece</th><th scope="col">What to use</th><th scope="col">Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Weights</td><td>Apache 2.0, 27.78B dense, vision</td><td><a href="https://huggingface.co/Qwen/Qwen3.8-27B">Qwen/Qwen3.8-27B</a></td></tr>
+        <tr><td>Quants</td><td><code>UD-Q4_K_XL</code> for 24GB cards</td><td><a href="https://huggingface.co/unsloth/Qwen3.8-27B-GGUF">unsloth/Qwen3.8-27B-GGUF</a></td></tr>
+        <tr><td>Smallest</td><td>1-bit, ~8GB, keeps about 77% accuracy</td><td><a href="https://unsloth.ai/docs/models/qwen3.8">Unsloth docs</a></td></tr>
+        <tr><td>Fastest</td><td>NVFP4, 1.5x BF16 speed, 92–97% top-1</td><td><a href="https://huggingface.co/unsloth/Qwen3.8-27B-GGUF">same repo, NVFP4 files</a></td></tr>
+        <tr><td>Runtime</td><td><code>llama-server</code>, OpenAI-compatible</td><td><a href="https://github.com/ggml-org/llama.cpp">ggml-org/llama.cpp</a></td></tr>
+        <tr><td>GUI options</td><td>Unsloth Desktop, LM Studio, Ollama</td><td><a href="https://lmstudio.ai/">lmstudio.ai</a> · <a href="https://ollama.com/">ollama.com</a></td></tr>
+        <tr><td>Agent on top</td><td>Hermes Agent pointed at localhost</td><td><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Setup</h2>
+
+  <ol class="proc">
+
+    <li>
+      <h3>Download the quant that fits</h3>
+<pre><code>pip install -U "huggingface_hub[cli]"
+hf download unsloth/Qwen3.8-27B-GGUF \
+    --local-dir unsloth/Qwen3.8-27B-GGUF \
+    --include "*UD-Q4_K_XL*"</code></pre>
+      <p>The <code>UD</code> prefix is what you are here for. Unsloth's Dynamic quants vary the precision per layer instead of flattening everything to the same bit width, and their v3 release claims about 10% better accuracy than a plain quant of the same size. Drop to <code>UD-Q3_K_XL</code> if 19GB is tight, and only go to the 1-bit file if the alternative is not running it at all.</p>
+    </li>
+
+    <li>
+      <h3>Serve it as an OpenAI endpoint</h3>
+      <p>One command, and everything else in your stack can talk to it:</p>
+<pre><code>llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_XL \
+    -ngl 999 -fa on -c 65536 --port 8080</code></pre>
+      <p>That serves <code>http://127.0.0.1:8080/v1</code>. <code>-ngl 999</code> puts every layer it can on the GPU, <code>-fa on</code> turns on flash attention, and <code>-c 65536</code> sets the context. Start at 64K rather than the full 256K: context is the part that pushes you over the card, and you can raise it once you know how much headroom the weights left you.</p>
+      <p>To check the model before wiring anything to it, <code>llama-cli</code> with the same file gives you a prompt in the terminal.</p>
+    </li>
+
+    <li>
+      <h3>Set the sampler correctly</h3>
+      <p>This is the step people skip, and then conclude the model is bad. Qwen3.8 wants different settings depending on whether it is thinking:</p>
+      <div class="tablewrap">
+        <table class="spec">
+          <thead>
+            <tr><th scope="col">Setting</th><th scope="col">Thinking</th><th scope="col">Instruct</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>temperature</td><td>1.0</td><td>0.7</td></tr>
+            <tr><td>top-p</td><td>0.95</td><td>0.80</td></tr>
+            <tr><td>top-k</td><td>20</td><td>20</td></tr>
+            <tr><td>min-p</td><td>0.0</td><td>0.0</td></tr>
+            <tr><td>presence penalty</td><td>0.0</td><td>1.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+<pre><code>llama-cli --model unsloth/Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-Q4_K_XL.gguf \
+    --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0</code></pre>
+      <p>The presence penalty on the instruct side is there to stop repetition loops. Reasoning effort is adjustable at three levels, and low effort on a routine edit saves you a lot of tokens you were going to read past anyway.</p>
+    </li>
+
+    <li>
+      <h3>Or skip llama.cpp entirely</h3>
+      <p>Unsloth Desktop is a GUI for macOS, Windows and Linux that picks parameters, finds your GPUs and offloads to RAM when the model does not fit. <a href="https://lmstudio.ai/">LM Studio</a> does the same job with its own model browser.</p>
+      <p><a href="https://ollama.com/">Ollama</a> takes an extra step, because these Unsloth quants are not in its library. Point a Modelfile at the file you downloaded and import it:</p>
+<pre><code>printf 'FROM ./Qwen3.8-27B-UD-Q4_K_XL.gguf\n' > Modelfile
+ollama create qwen3.8-27b -f Modelfile
+ollama run qwen3.8-27b</code></pre>
+      <p>Include the vision projector file from the same Hugging Face repo if you want it to read images, otherwise you have imported a text-only model and lost half of what makes this release interesting.</p>
+    </li>
+
+    <li>
+      <h3>Put an agent on it</h3>
+      <p>A local endpoint is only useful once something drives it. <a href="https://hermes-agent.nousresearch.com/docs/integrations/providers">Hermes Agent</a> treats a local server as a normal provider:</p>
+<pre><code># ~/.hermes/config.yaml
+model:
+  default: qwen3.8-27b
+  provider: custom
+  base_url: http://localhost:8080/v1
+  api_key:
+  context_length: 65536</code></pre>
+      <p>Or run <code>hermes model</code> and choose the custom endpoint option, which asks for the same three values. Leave the key empty for a local server. If you keep both a cloud model and this one, name them and switch mid-session:</p>
+<pre><code>providers:
+  local:
+    api: http://localhost:8080/v1
+
+model:
+  provider: custom:local
+  default: qwen3.8-27b</code></pre>
+      <p>Then <code>/model custom:local:qwen3.8-27b</code> in a session moves the work onto your own hardware without restarting anything. vLLM, SGLang and Ollama are supported the same way, so the endpoint you built in step 2 is not a commitment either.</p>
+    </li>
+
+  </ol>
+
+  <div class="annot">
+    <span class="tag">what running it locally actually costs</span>
+    <p>Electricity instead of tokens, and a real quality gap on hard planning work. A quantised 27B is not a frontier model and no amount of setup makes it one. What it is good at is the routine 80%: renames, test scaffolds, reading a long file and answering questions about it, anything you would rather not meter. It also runs with no network, which matters for code you are not allowed to send anywhere. The published accuracy retention figures come from Unsloth's own benchmarks, so treat them the way you would treat any vendor's numbers.</p>
+  </div>
+
+  <h2>Fine-tuning, which is what Unsloth is actually for</h2>
+
+  <p>The GGUFs are a side product. <a href="https://github.com/unslothai/unsloth">Unsloth</a> exists to make fine-tuning fit on one consumer GPU, and a 27B with a small LoRA on your own codebase or writing is within reach of the same 24GB card. That is the version of "local model" that a hosted API cannot sell you, because the thing you are adding is your own data. The training recipes are in the <a href="https://unsloth.ai/docs/models/qwen3.8">model docs</a> alongside the inference instructions.</p>
+
+  <h2>Keep the workspace, swap the model</h2>
+
+  <p>This model and the hosted one on <a href="../glm-openrouter-hermes/">sheet 06</a> only stay interchangeable if your project instructions are not welded to one tool. The structure that makes that true is Jake Van Clief and David McDermott's <a href="https://arxiv.org/abs/2603.16021">Interpretable Context Methodology</a>: numbered stage folders, a <code>CONTEXT.md</code> per stage carrying the role, <code>references/</code> in and <code>output/</code> out, and an <code>IDENTITY.md</code> at the root that any model can read to work out where it is.</p>
+
+  <p>Nothing in that tree is a capability of any particular model, which is the point. The same folders that a frontier model walked this morning are the folders this 27B walks tonight, and the only thing that changed is four lines of <code>config.yaml</code>. The full layout and the caveats on the paper's evidence are on <a href="../glm-openrouter-hermes/">sheet 06</a>.</p>
+
+  <div class="annot">
+    <span class="tag">if you copy one thing</span>
+    <p>Run step 2 tonight and leave the server running for a week. Send it the boring work, keep the hard problems on whatever you are paying for, and see what fraction actually comes back local. That number is your real answer about cancelling anything, and it is different for everybody.</p>
+  </div>
+
+</div>
+</main>
+
+<footer class="guide-foot"><div class="wrap">
+  <p>This sheet backs the video on leaving Claude without cancelling it. Memory figures and sampler settings from the Unsloth model docs, checked 29 Aug 2026. The hosted route is on <a href="../glm-openrouter-hermes/">sheet 06</a>.</p>
+  <p class="nav"><a href="../../">All sheets</a> · <a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a></p>
+</div></footer>
+
+</body>
+</html>

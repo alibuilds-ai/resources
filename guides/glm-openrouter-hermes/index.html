@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GLM 5.3 Flash on OpenRouter, driven by Hermes · alibuilds</title>
+<meta name="description" content="The model id, the real prices, the Hermes Agent config that points at it, and the routing block that keeps OpenRouter off the slow providers.">
+<meta property="og:title" content="GLM 5.3 Flash on OpenRouter, driven by Hermes">
+<meta property="og:description" content="The model id, the real prices, the Hermes Agent config that points at it, and the routing block that keeps OpenRouter off the slow providers.">
+<meta property="og:type" content="article">
+<link rel="icon" href="../../assets/icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the guide</a>
+
+<div class="titleblock"><div class="wrap">
+  <div class="tb"><a href="../../"><b>alibuilds</b>resources</a></div>
+  <div class="tb tb-hide">sheet<span class="v"> 06</span></div>
+  <div class="tb tb-hide">rev<span class="v"> 2026.08.29</span></div>
+  <div class="tb"><a href="../../">All sheets</a></div>
+</div></div>
+
+<div class="guide-head"><div class="wrap">
+  <p class="kicker">Reference · 29 Aug 2026</p>
+  <h1>GLM 5.3 Flash on OpenRouter, driven by Hermes Agent</h1>
+  <p class="standfirst">Half an hour of setup for a coding model that reads 1.3M tokens and bills at a fraction of what a frontier subscription costs. Here is the model id, what it actually charges, the Hermes config that points at it, and the part of your setup that should not change when you swap the model out again.</p>
+</div></div>
+
+<main class="wrap" id="body">
+<div class="prose">
+
+  <p>The stealth model from <a href="../ox-alpha-free/">sheet 02</a> has a name now. Ox Alpha was <a href="https://openrouter.ai/z-ai/glm-5.3-flash">GLM 5.3 Flash</a>, from <a href="https://docs.z.ai/">Z.ai</a>, released on 26 August 2026 with the weights published on <a href="https://huggingface.co/zai-org/GLM-5.3-Flash">Hugging Face</a> under MIT. The tokenizer match people spotted during the stealth window was the right read.</p>
+
+  <p>Two things make it worth wiring up rather than just trying in a playground. It takes 1,310,720 tokens of context, which is more than any agent loop you are likely to write will fill. And it is priced low enough that the per-token cost stops being the thing you plan around.</p>
+
+  <div class="tablewrap">
+    <table class="spec">
+      <thead>
+        <tr><th scope="col">Value</th><th scope="col">What it is</th><th scope="col">Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Model id</td><td><code>z-ai/glm-5.3-flash</code></td><td><a href="https://openrouter.ai/z-ai/glm-5.3-flash">openrouter.ai/z-ai/glm-5.3-flash</a></td></tr>
+        <tr><td>Context</td><td>1,310,720 in, 131,072 out</td><td><a href="https://openrouter.ai/z-ai/glm-5.3-flash">OpenRouter model card</a></td></tr>
+        <tr><td>Price now</td><td>$0.075 / M in, $0.015 cached, $0.25 / M out</td><td>50% launch promo, runs to 9 Sep 2026</td></tr>
+        <tr><td>List price</td><td>$0.15 / M in, $0.03 cached, $0.50 / M out</td><td>what it reverts to after the promo</td></tr>
+        <tr><td>Weights</td><td>MIT, open, downloadable</td><td><a href="https://huggingface.co/zai-org/GLM-5.3-Flash">zai-org/GLM-5.3-Flash</a></td></tr>
+        <tr><td>Tools</td><td><code>tools</code>, <code>tool_choice</code>, <code>response_format</code></td><td>no JSON-schema enforcement, validate downstream</td></tr>
+        <tr><td>Agent</td><td>Hermes Agent, MIT</td><td><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>For comparison, Claude Opus 5 is $5 per million in and $25 per million out. At list price that is a 33x gap on input and 50x on output. On the promo it is closer to 66x and 100x. Those ratios are the reason this sheet exists, but they are also the reason to keep reading past them: cheap tokens change what you can afford to run, not what the model is good at.</p>
+
+  <figure class="dwg">
+    <div class="pan">
+    <svg viewBox="0 0 700 258" role="img" aria-labelledby="wire-title wire-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="wire-title">Where the model plugs in</title>
+      <desc id="wire-desc">Three interchangeable model sources — OpenRouter running GLM 5.3 Flash, Nous Portal, and a local llama-server — all connect to a single Hermes config file, which in turn drives one unchanged workspace folder tree containing IDENTITY.md, CONTEXT.md and numbered stage folders.</desc>
+      <defs>
+        <marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="oklch(0.775 0.022 240)"/></marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="13" fill="oklch(0.945 0.012 240)">
+
+        <text x="1" y="14" font-size="11" fill="oklch(0.610 0.028 245)">swappable — this column is the only one that changes</text>
+
+        <rect x="1" y="22" width="216" height="42" fill="oklch(0.840 0.120 200 / 0.14)" stroke="oklch(0.840 0.120 200)"/>
+        <text x="13" y="41" fill="oklch(0.840 0.120 200)">OpenRouter</text>
+        <text x="13" y="56" font-size="11" fill="oklch(0.610 0.028 245)">z-ai/glm-5.3-flash</text>
+
+        <rect x="1" y="78" width="216" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="97">Nous Portal</text>
+        <text x="13" y="112" font-size="11" fill="oklch(0.610 0.028 245)">one OAuth, no key to paste</text>
+
+        <rect x="1" y="134" width="216" height="42" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="13" y="153">llama-server</text>
+        <text x="13" y="168" font-size="11" fill="oklch(0.610 0.028 245)">localhost:8080/v1 — sheet 07</text>
+
+        <path d="M217 43 H274" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar6)"/>
+        <path d="M217 99 H274" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar6)"/>
+        <path d="M217 155 H274" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar6)"/>
+
+        <rect x="274" y="22" width="176" height="154" fill="none" stroke="oklch(0.360 0.040 250)"/>
+        <text x="286" y="41">~/.hermes/</text>
+        <text x="286" y="62" font-size="11" fill="oklch(0.610 0.028 245)">config.yaml</text>
+        <text x="286" y="78" font-size="11" fill="oklch(0.610 0.028 245)">  model.provider</text>
+        <text x="286" y="94" font-size="11" fill="oklch(0.610 0.028 245)">  model.default</text>
+        <text x="286" y="110" font-size="11" fill="oklch(0.610 0.028 245)">.env</text>
+        <text x="286" y="126" font-size="11" fill="oklch(0.610 0.028 245)">SOUL.md</text>
+        <text x="286" y="142" font-size="11" fill="oklch(0.610 0.028 245)">memories/ skills/</text>
+        <text x="286" y="166" font-size="11" fill="oklch(0.610 0.028 245)">two lines move</text>
+
+        <path d="M450 99 H508" fill="none" stroke="oklch(0.775 0.022 240)" marker-end="url(#ar6)"/>
+
+        <text x="508" y="14" font-size="11" fill="oklch(0.610 0.028 245)">untouched by the swap</text>
+
+        <rect x="508" y="22" width="191" height="154" fill="none" stroke="oklch(0.470 0.050 250)"/>
+        <text x="520" y="41">your workspace/</text>
+        <text x="520" y="62" font-size="11" fill="oklch(0.610 0.028 245)">IDENTITY.md</text>
+        <text x="520" y="78" font-size="11" fill="oklch(0.610 0.028 245)">CONTEXT.md</text>
+        <text x="520" y="94" font-size="11" fill="oklch(0.610 0.028 245)">stages/01_research/</text>
+        <text x="520" y="110" font-size="11" fill="oklch(0.610 0.028 245)">stages/02_script/</text>
+        <text x="520" y="126" font-size="11" fill="oklch(0.610 0.028 245)">stages/03_production/</text>
+        <text x="520" y="142" font-size="11" fill="oklch(0.610 0.028 245)">_config/</text>
+        <text x="520" y="166" font-size="11" fill="oklch(0.610 0.028 245)">nothing moves</text>
+
+        <text x="350" y="244" text-anchor="middle" font-size="11" fill="oklch(0.610 0.028 245)">the migration is two config lines, provided the right-hand column was built to be portable</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>fig. 1 — the reason a model swap is cheap is on the right, not the left. More on that at the bottom of the sheet.</figcaption>
+  </figure>
+
+  <h2>Setup</h2>
+
+  <ol class="proc">
+
+    <li>
+      <h3>Get an OpenRouter key</h3>
+      <p>Make one at <a href="https://openrouter.ai/keys">openrouter.ai/keys</a>. Load a few dollars of credit. At these prices a few dollars is a lot of agent runs, and it also lifts you off the free-tier request caps.</p>
+      <p>Confirm the model answers before installing anything on top of it:</p>
+<pre><code>curl https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"z-ai/glm-5.3-flash",
+       "messages":[{"role":"user","content":"say ok"}]}'</code></pre>
+      <p>Any OpenAI SDK works with the same two values: base URL <code>https://openrouter.ai/api/v1</code>, model <code>z-ai/glm-5.3-flash</code>. If all you wanted was a cheaper model behind code you already wrote, you are finished here.</p>
+    </li>
+
+    <li>
+      <h3>Install Hermes Agent</h3>
+<pre><code>curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</code></pre>
+      <p>Linux, macOS, WSL2 and Termux. Windows PowerShell support is early beta, so on Windows use WSL2. <a href="https://github.com/NousResearch/hermes-agent">Hermes</a> is MIT licensed and runs the same agent from a terminal or from Telegram, Discord, Slack, WhatsApp, Signal and email, which is the main reason to pick it over a terminal-only agent.</p>
+    </li>
+
+    <li>
+      <h3>Point it at GLM</h3>
+      <p>Fastest path, no file editing:</p>
+<pre><code>hermes config set OPENROUTER_API_KEY sk-or-...
+hermes chat --provider openrouter --model z-ai/glm-5.3-flash</code></pre>
+      <p>Or run <code>hermes model</code> and pick from the interactive list, which writes the choice to <a href="https://hermes-agent.nousresearch.com/docs/user-guide/configuring-models"><code>~/.hermes/config.yaml</code></a> for you. The manual equivalent, key in <code>~/.hermes/.env</code> and the rest in <code>config.yaml</code>:</p>
+<pre><code># ~/.hermes/.env
+OPENROUTER_API_KEY=sk-or-...
+
+# ~/.hermes/config.yaml
+model:
+  provider: openrouter
+  default: z-ai/glm-5.3-flash</code></pre>
+      <p>Hermes docs show two shapes for this key, a mapping as above and a flat string such as <code>model: openrouter/z-ai/glm-5.3-flash</code>. Run <code>hermes config view</code> after setting it and use whichever shape your build echoes back. Secrets belong in <code>.env</code>, everything else in <code>config.yaml</code>, and CLI flags beat both.</p>
+      <p>Hermes asks for at least 64K of context because the system prompt and tool schemas eat a large slice before your first message. GLM 5.3 Flash has twenty times that, so this constraint stops mattering.</p>
+    </li>
+
+    <li>
+      <h3>Control which provider serves you</h3>
+      <p>Twenty-one providers serve <code>z-ai/glm-5.3-flash</code> on OpenRouter, and they are not equally fast. <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/provider-routing">Provider routing</a> passes your preference through to OpenRouter on every request:</p>
+<pre><code># ~/.hermes/config.yaml
+provider_routing:
+  sort: throughput        # or: price, latency
+  only: []
+  ignore: []
+  order: []
+  require_parameters: true
+  data_collection: deny</code></pre>
+      <p><code>require_parameters: true</code> drops providers that quietly ignore <code>tools</code> or <code>temperature</code>, which is the failure that looks like the model being stupid rather than the route being wrong. <code>data_collection: deny</code> keeps your prompts off providers that train on them. Both are worth setting before you notice you needed them. This block only does anything on OpenRouter or Nous Portal.</p>
+    </li>
+
+    <li>
+      <h3>Give it somewhere to fall back to</h3>
+      <p>A single cheap provider will be down at some point. Chain a second one, and push the small background calls onto something cheaper still:</p>
+<pre><code># ~/.hermes/config.yaml
+fallback_providers:
+  - provider: openrouter
+    model: z-ai/glm-5.3-flash
+  - provider: openrouter
+    model: ~google/gemini-flash-latest
+
+auxiliary:
+  compression:
+    provider: openrouter
+    model: ~google/gemini-flash-latest
+  title:
+    provider: openrouter
+    model: ~google/gemini-flash-latest</code></pre>
+      <p>The <code>~</code> prefix in the OpenRouter docs marks a floating alias that tracks the newest version of a model. Use the bare slug when you want a pinned model that cannot change under you, which is what <code>z-ai/glm-5.3-flash</code> is.</p>
+      <p>Conversation compression is on by default and summarises the history once it passes half the context limit. With a 1.3M window you will rarely reach it, so if you want it never to fire, raise <code>compression.threshold</code> rather than turning the feature off.</p>
+    </li>
+
+    <li>
+      <h3>Sandbox it before you let it run commands</h3>
+      <p>Hermes runs shell commands on your machine by default. A cheap model that is willing to try things is a good reason to put a wall around it:</p>
+<pre><code># ~/.hermes/config.yaml
+terminal:
+  backend: docker
+  docker_image: nikolaik/python-nodejs:python3.11-nodejs20
+  docker_mount_cwd_to_workspace: true
+  container_persistent: true</code></pre>
+      <p><code>ssh</code>, <code>modal</code>, <code>daytona</code>, <code>vercel_sandbox</code> and <code>singularity</code> are the other backends if Docker is not where you want it running.</p>
+    </li>
+
+  </ol>
+
+  <div class="annot">
+    <span class="tag">what you are actually buying</span>
+    <p>Z.ai's own benchmarks put GLM 5.3 Flash level with Opus 4.8 on coding and agent work, and a community DeepSWE run had it above Claude Fable 5. Vendor benchmarks and ten-task community runs are both weak evidence. What is not in dispute is the price and the context window. Treat the quality claim as something to test on one real task from your own repo, not something to plan a migration around.</p>
+  </div>
+
+  <h2>The part that decides whether the next swap is cheap</h2>
+
+  <p>Everything above is the easy half. Changing model takes two lines. What makes migrations expensive is that most people's agent setup is glued to one tool: instructions live in a <code>CLAUDE.md</code> that only Claude Code reads, decisions live in a chat history that does not export, and the workflow lives in a framework's Python.</p>
+
+  <p><a href="https://arxiv.org/abs/2603.16021">Jake Van Clief and David McDermott</a> published the fix in March 2026 as the Interpretable Context Methodology, and the Model Workspace Protocol underneath it. The idea is short: put the orchestration in the filesystem. Numbered folders are the stages. Plain markdown files carry the role and the context for each stage. Local scripts do the mechanical work that does not need a model. One agent walks the folders in order.</p>
+
+<pre><code>workspace/
+├── IDENTITY.md              where am I, what is this workspace
+├── CONTEXT.md               where do I go, what happens next
+├── stages/
+│   ├── 01_research/
+│   │   ├── CONTEXT.md       the role and rules for this stage
+│   │   ├── references/      source material the stage may read
+│   │   └── output/          the handoff to stage 02
+│   ├── 02_script/
+│   │   ├── CONTEXT.md
+│   │   ├── references/
+│   │   └── output/
+│   └── 03_production/
+│       ├── CONTEXT.md
+│       ├── references/
+│       └── output/
+└── _config/
+    ├── conventions.md
+    ├── glossary.md
+    └── voice.md</code></pre>
+
+  <p>The paper's claim about portability is explicit: "ICM is designed to be model-agnostic. The protocol specifies folder structure, file formats, and naming conventions. It does not depend on any model-specific capability." Nothing in that tree is a Claude feature, an OpenAI feature or a framework API. It is numbered directories and markdown. Point GLM at it and it reads the same files Claude read.</p>
+
+  <p>Tool-specific instruction files become adapters rather than the source of truth. <code>IDENTITY.md</code> holds the real content, and <code>CLAUDE.md</code>, <code>.cursorrules</code> or <code>.github/copilot-instructions.md</code> are thin files pointing at it. The <a href="https://github.com/ktnCodes/icm-template">icm-template</a> repo is MIT and ships Claude Code skills that scaffold the tree for you, but the structure is the deliverable and you can create it with <code>mkdir</code>.</p>
+
+  <div class="annot">
+    <span class="tag">the honest caveat</span>
+    <p>The model-agnostic claim is a design claim, not a measured one. The authors tested on Claude Opus 4.6 and Sonnet 4.6 only, and say so: "all current testing has been conducted on a single model family. Cross-model evaluation is a clear next step." The reported evidence is practitioner feedback from 33 people, not a controlled comparison. So build the folders because plain files survive tool churn and you can read them yourself, not because a paper proved a number.</p>
+  </div>
+
+  <div class="annot">
+    <span class="tag">if you copy one thing</span>
+    <p>Move your project instructions out of the tool-specific file and into a plain markdown tree this week, while you are still on Claude. Do that first and the model swap is a config edit. Do it after and the swap is a rewrite, which is exactly the cost that keeps people paying for a subscription they have stopped enjoying.</p>
+  </div>
+
+</div>
+</main>
+
+<footer class="guide-foot"><div class="wrap">
+  <p>This sheet backs the video on leaving Claude without cancelling it. Prices verified on the OpenRouter model card, 29 Aug 2026, during the launch promo. The fully local route is on <a href="../qwen-local-unsloth/">sheet 07</a>.</p>
+  <p class="nav"><a href="../../">All sheets</a> · <a href="https://www.instagram.com/alibuilds.ai/">@alibuilds.ai</a></p>
+</div></footer>
+
+</body>
+</html>
